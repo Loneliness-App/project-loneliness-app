@@ -1,8 +1,14 @@
-const sequelize = new Sequelize('', {
+const { Sequelize, DataTypes } = require('sequelize');
+
+const sequelize = new Sequelize('loneliness', 'root', '', {
+    host: 'localhost',
+    dialect: 'mysql',
     define: {
         freezeTableName: true
     }
-});
+  });
+
+sequelize.authenticate().then(() => console.log("connected")).catch((err) => console.log("error: ", err));  
 
 const KEY_LENGTH = 16;
 
@@ -21,7 +27,7 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING(KEY_LENGTH),
         allowNull: false,
     }
-});
+}, {});
 
 const Request = sequelize.define('Request', {
     id: {
@@ -72,7 +78,7 @@ const Reply = sequelize.define('Reply', {
     },
 });
 
-const Suggestion = sequelize.define('Reply', {
+const Suggestion = sequelize.define('Suggestion', {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -91,4 +97,9 @@ const Suggestion = sequelize.define('Reply', {
         type: DataTypes.STRING(500)
     }
 });
+
+sequelize.sync().then(()=> console.log("synced")).catch((err) => console.log("error", err));
+
+
+
 
