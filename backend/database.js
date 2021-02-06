@@ -1,14 +1,17 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('loneliness', 'root', '', {
+DB_NAME = process.env.DB_NAME;
+DB_UNAME = process.env.DB_UNAME;
+
+const sequelize = new Sequelize(DB_NAME, DB_UNAME, '', {
     host: 'localhost',
-    dialect: 'mysql',
+    dialect: 'postgres',
     define: {
         freezeTableName: true
     }
-  });
+});
 
-sequelize.authenticate().then(() => console.log("connected")).catch((err) => console.log("error: ", err));  
+sequelize.authenticate().then(() => console.log("connected")).catch((err) => console.log("error: ", err));
 
 const KEY_LENGTH = 16;
 
@@ -94,11 +97,12 @@ const Suggestion = sequelize.define('Suggestion', {
         allowNull: false,
     },
     data: {
-        type: DataTypes.STRING(500)
+        type: DataTypes.JSON,
+        allowNull: false,
     }
 });
 
-sequelize.sync().then(()=> console.log("synced")).catch((err) => console.log("error", err));
+sequelize.sync().then(() => console.log("synced")).catch((err) => console.log("error", err));
 
 
 
