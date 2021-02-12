@@ -104,6 +104,8 @@ const Suggestion = sequelize.define('Suggestion', {
 
 sequelize.sync().then(() => console.log("synced")).catch((err) => console.log("error", err));
 
+module.exports = {User, Request, Reply, Suggestion}
+
 
 
 
