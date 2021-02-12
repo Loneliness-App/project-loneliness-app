@@ -11,7 +11,7 @@ const sequelize = new Sequelize(DB_NAME, DB_UNAME, '', {
     }
 });
 
-sequelize.authenticate().then(() => console.log("connected")).catch((err) => console.log("error: ", err));
+//sequelize.authenticate().then(() => console.log("connected")).catch((err) => console.log("error: ", err));
 
 const KEY_LENGTH = 16;
 
@@ -102,7 +102,7 @@ const Suggestion = sequelize.define('Suggestion', {
     }
 });
 
-sequelize.sync().then(() => console.log("synced")).catch((err) => console.log("error", err));
+//sequelize.sync().then(() => console.log("synced")).catch((err) => console.log("error", err));
 
 module.exports = {User, Request, Reply, Suggestion}
 

@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.post('user', function(req, res) {  
+router.post('/user', function(req, res) {  
   User.create(req.body).then((user) => {res.json(user); console.log("user post")})
 })
 
