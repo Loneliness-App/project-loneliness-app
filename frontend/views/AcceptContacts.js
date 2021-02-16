@@ -16,8 +16,8 @@ class AcceptContacts extends Component {
                     recommendation giving and receiving.</Text>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <SubmitButton title='Accept' route='NewUser'/>
-                    <SubmitButton title='Reject' route='NewUser'/>
+                    <SubmitButton title='Accept' route='NewUser' color={{backgroundColor: '#007aff'}}/>
+                    <SubmitButton title='Reject' route='NewUser' color={{backgroundColor: '#e82020'}}/>
                 </View>
             </View>
         );

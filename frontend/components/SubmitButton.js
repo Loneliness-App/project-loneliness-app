@@ -8,7 +8,7 @@ const SubmitButton = (props) => {
     return(
         <>
             <View style={styles.container}>
-                <TouchableOpacity style={styles.button} onPress={() => {
+                <TouchableOpacity style={[styles.button, props.color]} onPress={() => {
                     navigation.navigate(props.route, {name: props.name});
                 }}>
                     <Text style={styles.buttonText}>{props.title}</Text>
@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
         padding: 15
     },
     button: {
-        backgroundColor: '#007aff',
         padding: 10,
         width: 120,
         height: 50,

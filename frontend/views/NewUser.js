@@ -32,7 +32,7 @@ class NewUser extends Component {
                     placeholderTextColor={'#9a9a9a'}
                     autoCorrect = {false}
                 />
-                <SubmitButton title='Create' route='AcceptContacts' name={this.state.firstName}/>
+                <SubmitButton title='Create' route='AcceptContacts' name={this.state.firstName} color={{backgroundColor: '#007aff'}}/>
             </View>
         );
     }
