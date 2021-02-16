@@ -17,17 +17,14 @@ class Home extends Component {
     };
 
     renderItem = ({item}) => (
-        <ListItem style={styles.listItem} bottomDivider>
+        <ListItem style={styles.listItem} bottomDivider onPress={() => {
+            this.props.navigation.navigate('ViewRequest', {title: item.title});
+        }}>
             <ListItem.Content>
                 <ListItem.Title style={styles.listTitle}>{item.title}</ListItem.Title>
                 <ListItem.Subtitle style={styles.listSubtitle}>{item.subtitle}</ListItem.Subtitle>
             </ListItem.Content>
-            <ListItem.Chevron 
-                size={24} 
-                onPress={() => {
-                    this.props.navigation.navigate('ViewRequest', {title: item.title});
-                }}
-            />
+            <ListItem.Chevron size={24} />
         </ListItem>
     )
 
@@ -96,10 +93,11 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         width: '100%',
-        marginTop: 10
+        marginTop: 10,
+        paddingHorizontal: 10
     },
     listItem: {
-        paddingHorizontal: 10
+        borderRadius: 10
     },
     listTitle: {
         fontSize: 16,
