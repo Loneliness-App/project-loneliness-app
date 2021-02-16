@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
         flex: 1,
         margin: 25, 
         paddingVertical: 100,
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: 'white'
     },
     logo: {
         width: 190,

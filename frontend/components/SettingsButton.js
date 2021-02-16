@@ -1,16 +1,21 @@
 import React from 'react'
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
-import {useNavigation} from '@react-navigation/native'
+import {View, Text, TouchableOpacity, StyleSheet, Linking, NativeModules, Platform} from 'react-native'
 
-const SubmitButton = (props) => {
-    const navigation = useNavigation();
+const { RNAndroidOpenSettings } = NativeModules;
 
+function openAppSettings() {
+    if (Platform.OS === 'ios') {
+      Linking.openURL("app-settings:");
+    } else {
+      RNAndroidOpenSettings.appDetailsSettings();
+    }
+}
+
+const SettingsButton = (props) => {
     return(
         <>
             <View style={styles.container}>
-                <TouchableOpacity style={[styles.button, props.color, props.width]} onPress={() => {
-                    navigation.navigate(props.route, {name: props.name});
-                }}>
+                <TouchableOpacity style={[styles.button, props.color, props.width]} onPress={openAppSettings}>
                     <Text style={styles.buttonText}>{props.title}</Text>
                 </TouchableOpacity>
             </View>
@@ -38,4 +43,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SubmitButton;
+export default SettingsButton;

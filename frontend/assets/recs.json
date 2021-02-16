@@ -1,0 +1,14 @@
+{
+    "recs": [
+      {
+        "recId": 1,
+        "title": "Gym Workout Partners",
+        "subtitle": "From Natalie H."
+      },
+      {
+        "recId": 2,
+        "title": "Fellow CS15 Students?",
+        "subtitle": "From Connor L."
+      }
+    ]
+  }

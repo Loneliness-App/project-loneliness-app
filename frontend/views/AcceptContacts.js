@@ -16,8 +16,8 @@ class AcceptContacts extends Component {
                     recommendation giving and receiving.</Text>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <SubmitButton title='Accept' route='NewUser' color={{backgroundColor: '#007aff'}}/>
-                    <SubmitButton title='Reject' route='NewUser' color={{backgroundColor: '#e82020'}}/>
+                    <SubmitButton title='Accept' route='Home' color={{backgroundColor: '#007aff'}}/>
+                    <SubmitButton title='Reject' route='ContactsError' color={{backgroundColor: '#e82020'}}/>
                 </View>
             </View>
         );
@@ -29,7 +29,8 @@ const styles = StyleSheet.create({
         flex: 1,
         margin: 25, 
         paddingVertical: 100,
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: 'white'
     },
     logo: {
         width: 190,
