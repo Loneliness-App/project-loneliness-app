@@ -1,17 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
-import {useNavigation} from '@react-navigation/native'
+import Clipboard from 'expo-clipboard'
 
-const SubmitButton = (props) => {
-    const navigation = useNavigation();
+const CopyButton = (props) => {
+
+    const [copied, setCopied] = useState(props.title)
+ 
+    const copyToClipboard = () => {
+        Clipboard.setString(props.link);
+        setCopied('Copied!')
+    }
 
     return(
         <>
             <View style={styles.container}>
-                <TouchableOpacity activeOpacity={0.5} style={[styles.button, props.color, props.width]} onPress={() => {
-                    navigation.navigate(props.route, {name: props.name});
-                }}>
-                    <Text style={styles.buttonText}>{props.title}</Text>
+                <TouchableOpacity activeOpacity={0.5} style={[styles.button, props.color, props.width]} onPress={() => {copyToClipboard()}}>
+                    <Text style={styles.buttonText}>{copied}</Text>
                 </TouchableOpacity>
             </View>
         </>
@@ -38,4 +42,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SubmitButton;
+export default CopyButton;

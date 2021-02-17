@@ -1,16 +1,12 @@
 import React from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
-import {useNavigation} from '@react-navigation/native'
 
-const SubmitButton = (props) => {
-    const navigation = useNavigation();
+const ShareButton = (props) => {
 
     return(
         <>
             <View style={styles.container}>
-                <TouchableOpacity activeOpacity={0.5} style={[styles.button, props.color, props.width]} onPress={() => {
-                    navigation.navigate(props.route, {name: props.name});
-                }}>
+                <TouchableOpacity activeOpacity={0.5} style={[styles.button, props.color, props.width]}>
                     <Text style={styles.buttonText}>{props.title}</Text>
                 </TouchableOpacity>
             </View>
@@ -38,4 +34,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SubmitButton;
+export default ShareButton;

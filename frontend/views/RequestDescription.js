@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { TextInput, TouchableOpacity} from 'react-native';
-import {View, StyleSheet, Button} from 'react-native'
-import { Feather} from '@expo/vector-icons'
+import {View, StyleSheet, Button, Text, TextInput, TouchableOpacity} from 'react-native'
+import {Feather} from '@expo/vector-icons'
 import BigHeaderText from '../components/BigHeaderText'
-import SubmitButton from '../components/SubmitButton'
+import CopyButton from '../components/CopyButton'
+import ShareButton from '../components/ShareButton'
 
 class RequestDescription extends Component {
 
@@ -15,9 +15,14 @@ class RequestDescription extends Component {
         }
     }
 
-    toggleEdit() {
-        this.setState({isEditable: (!this.state.isEditable)})
+    editText() {
+        this.setState({isEditable: true})
         setTimeout(() => this.textInput.focus(), 100)
+    }
+
+    saveText() {
+        this.setState({isEditable: false})
+        this.textInput.blur()
     }
 
     render() {
@@ -35,19 +40,18 @@ class RequestDescription extends Component {
                             ref={(input) => { this.textInput = input; }}
                         />
                         <TouchableOpacity
-                            onPress = {() => {this.toggleEdit()}}
+                            onPress = {() => {this.editText()}}
                         >   
                             {this.state.isEditable 
-                                ? <Button title="Save" onPress = {() => {this.toggleEdit()}}/>
+                                ? <Button title="Save" onPress = {() => {this.saveText()}}/>
                                 : <Feather name="edit" size={24} color="#007aff" />
                             }
 
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={styles.buttonContainer}>
-                    <SubmitButton title='Share' color={{backgroundColor: '#007aff'}}/>
-                </View>
+                <CopyButton title='Copy Request Link' link='https://myrequestlink.brown.edu' color={{backgroundColor: '#007aff'}} onPress = {() => {this.copyToClipboard()}}/>
+                <ShareButton title='Share' color={{backgroundColor: '#007aff'}}/>
             </View>
         );
     }
@@ -61,7 +65,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     alert: {
-        marginTop: 30,
+        marginVertical: 30,
         paddingVertical: 20,
         paddingHorizontal: 20,
         backgroundColor: '#EEEEEE',
@@ -74,13 +78,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '400',
         color: '#333333'
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        width: '100%',
-        height: 50,
-        paddingVertical: 10
     },
     textInputContainer: {
         width: '100%',
