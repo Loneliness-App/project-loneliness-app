@@ -15,7 +15,7 @@ const SettingsButton = (props) => {
     return(
         <>
             <View style={styles.container}>
-                <TouchableOpacity style={[styles.button, props.color, props.width]} onPress={openAppSettings}>
+                <TouchableOpacity activeOpacity={0.5} style={[styles.button, props.color, props.width]} onPress={openAppSettings}>
                     <Text style={styles.buttonText}>{props.title}</Text>
                 </TouchableOpacity>
             </View>

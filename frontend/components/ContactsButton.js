@@ -1,16 +1,24 @@
 import React from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
+import * as Contacts from 'expo-contacts';
 
-const SubmitButton = (props) => {
-    const navigation = useNavigation();
+const ContactsButton  = (props) => {
+    const navigation = useNavigation()
+
+    async function openContacts() {
+        let route = "ContactsError"
+        const { status } = await Contacts.requestPermissionsAsync();
+        if (status === 'granted') {
+            route = 'Home'
+        }
+        navigation.navigate(route, {name: props.name});
+    }
 
     return(
         <>
             <View style={styles.container}>
-                <TouchableOpacity activeOpacity={0.5} style={[styles.button, props.color, props.width]} onPress={() => {
-                    navigation.navigate(props.route, {name: props.name});
-                }}>
+                <TouchableOpacity activeOpacity={0.5} style={[styles.button, props.color, props.width]} onPress={openContacts}>
                     <Text style={styles.buttonText}>{props.title}</Text>
                 </TouchableOpacity>
             </View>
@@ -38,4 +46,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SubmitButton;
+export default ContactsButton;

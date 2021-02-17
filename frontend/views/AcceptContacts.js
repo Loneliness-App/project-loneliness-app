@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {View, Image, Text, StyleSheet} from 'react-native'
 import HeaderText from '../components/HeaderText'
 import logo from '../assets/logo.png'
-import SubmitButton from '../components/SubmitButton'
+import ContactsButton from '../components/ContactsButton'
 
 class AcceptContacts extends Component {
 
@@ -16,8 +16,7 @@ class AcceptContacts extends Component {
                     recommendation giving and receiving.</Text>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <SubmitButton title='Accept' route='Home' color={{backgroundColor: '#007aff'}}/>
-                    <SubmitButton title='Reject' route='ContactsError' color={{backgroundColor: '#e82020'}}/>
+                    <ContactsButton title='Accept' color={{backgroundColor: '#007aff'}}/>
                 </View>
             </View>
         );

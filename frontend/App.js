@@ -8,6 +8,7 @@ import AcceptContacts from './views/AcceptContacts'
 import ContactsError from './views/ContactsError'
 import Home from './views/Home'
 import ViewRequest from './views/ViewRequest'
+import RequestDescription from './views/RequestDescription'
 
 const Stack = createStackNavigator();
 
@@ -42,6 +43,16 @@ export default function App() {
         <Stack.Screen           
           name="ViewRequest"
           component={ViewRequest}
+          options={{
+            title: "",
+            headerStyle: {
+              height: 100
+            }
+          }}
+        />
+        <Stack.Screen           
+          name="RequestDescription"
+          component={RequestDescription}
           options={{
             title: "",
             headerStyle: {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Text, StyleSheet} from 'react-native'
 
-class HeaderText extends Component {
+class BigHeaderText extends Component {
     render() {
       return (
         <Text {...this.props} style={[styles.headerText, this.props.style]}>{this.props.children}</Text>
@@ -10,9 +10,9 @@ class HeaderText extends Component {
   }
   const styles = StyleSheet.create({
     headerText: {
-      fontSize: 30,
-      fontWeight: '500'
+      fontSize: 32,
+      fontWeight: '700'
     },
   });
 
-  export default HeaderText;
+  export default BigHeaderText;
