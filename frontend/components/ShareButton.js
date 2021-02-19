@@ -1,12 +1,21 @@
 import React from 'react'
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
+import {View, Text, TouchableOpacity, StyleSheet, ActionSheetIOS} from 'react-native'
 
 const ShareButton = (props) => {
+
+
+    const share = () => {
+        ActionSheetIOS.showShareActionSheetWithOptions({
+            url: props.link,
+            subject: 'Reading Buddies Request',
+            message: `I'm looking for some recommendations for my ${props.requestName} friend request on the Project Loneliness app!`
+        }, () => {}, () => {})
+    }
 
     return(
         <>
             <View style={styles.container}>
-                <TouchableOpacity activeOpacity={0.5} style={[styles.button, props.color, props.width]}>
+                <TouchableOpacity activeOpacity={0.5} style={[styles.button, props.color, props.width]} onPress={() => {share()}}>
                     <Text style={styles.buttonText}>{props.title}</Text>
                 </TouchableOpacity>
             </View>

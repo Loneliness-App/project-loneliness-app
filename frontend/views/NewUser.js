@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, TextInput, Image, StyleSheet} from 'react-native'
+import {View, TextInput, Image, StyleSheet, TouchableOpacity} from 'react-native'
 import HeaderText from '../components/HeaderText'
 import SubmitButton from '../components/SubmitButton'
 import logo from '../assets/logo.png'
@@ -9,7 +9,8 @@ class NewUser extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            firstName: ""
+            firstName: "",
+            lastName: ""
         }
     }
 
@@ -30,9 +31,18 @@ class NewUser extends Component {
                     style={styles.input} 
                     placeholder={'Last Name'} 
                     placeholderTextColor={'#9a9a9a'}
+                    value = {this.state.lastName}
+                    onChangeText = {(lastName) => this.setState({lastName})}
                     autoCorrect = {false}
                 />
-                <SubmitButton title='Create' route='AcceptContacts' name={this.state.firstName} color={{backgroundColor: '#007aff'}}/>
+                <SubmitButton 
+                    enabled={this.state.firstName !== "" && this.state.lastName !== ""} 
+                    title='Create' 
+                    route='AcceptContacts' 
+                    name={this.state.firstName} 
+                    color={{backgroundColor: '#007aff'}}
+                    opacity={this.state.firstName !== "" && this.state.lastName !== "" ? {opacity: 1.0} : {opacity: 0.5}}
+                />
             </View>
         );
     }

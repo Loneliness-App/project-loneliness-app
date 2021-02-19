@@ -8,9 +8,14 @@ const SubmitButton = (props) => {
     return(
         <>
             <View style={styles.container}>
-                <TouchableOpacity activeOpacity={0.5} style={[styles.button, props.color, props.width]} onPress={() => {
-                    navigation.navigate(props.route, {name: props.name});
-                }}>
+                <TouchableOpacity 
+                    disabled={!props.enabled}
+                    activeOpacity={0.5} 
+                    style={[styles.button, props.color, props.width, props.opacity]} 
+                    onPress={() => {
+                        navigation.navigate(props.route, {name: props.name});
+                    }}
+                >
                     <Text style={styles.buttonText}>{props.title}</Text>
                 </TouchableOpacity>
             </View>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, StyleSheet, Button, Text, TextInput, TouchableOpacity} from 'react-native'
+import {View, StyleSheet, Button, TextInput, TouchableOpacity} from 'react-native'
 import {Feather} from '@expo/vector-icons'
 import BigHeaderText from '../components/BigHeaderText'
 import CopyButton from '../components/CopyButton'
@@ -11,7 +11,8 @@ class RequestDescription extends Component {
         super(props)
         this.state = {
             description: description,
-            isEditable: false
+            isEditable: false,
+            link: 'https://myrequestlink.brown.edu'
         }
     }
 
@@ -38,9 +39,11 @@ class RequestDescription extends Component {
                             value = {this.state.description}
                             onChangeText = {(description) => this.setState({description})}
                             ref={(input) => { this.textInput = input; }}
+                            numberOfLines={15}
                         />
                         <TouchableOpacity
                             onPress = {() => {this.editText()}}
+                            style={styles.editIcon}
                         >   
                             {this.state.isEditable 
                                 ? <Button title="Save" onPress = {() => {this.saveText()}}/>
@@ -50,8 +53,8 @@ class RequestDescription extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <CopyButton title='Copy Request Link' link='https://myrequestlink.brown.edu' color={{backgroundColor: '#007aff'}} onPress = {() => {this.copyToClipboard()}}/>
-                <ShareButton title='Share' color={{backgroundColor: '#007aff'}}/>
+                <CopyButton title='Copy Request Link' link={this.state.link} color={{backgroundColor: '#007aff'}}/>
+                <ShareButton title='Share' requestName={this.props.route.params.title} link={this.state.link} color={{backgroundColor: '#007aff'}}/>
             </View>
         );
     }
@@ -66,22 +69,32 @@ const styles = StyleSheet.create({
     },
     alert: {
         marginVertical: 30,
-        paddingVertical: 20,
+        paddingTop: 20,
+        paddingBottom: 50,
         paddingHorizontal: 20,
         backgroundColor: '#EEEEEE',
         width: '90%',
         borderRadius: 10,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        maxHeight: 350, 
+        minHeight: 100
     },
     alertText: {
         fontSize: 16,
         fontWeight: '400',
-        color: '#333333'
+        color: '#333333',
     },
     textInputContainer: {
         width: '100%',
         alignItems: 'flex-end'
+    },
+    editIcon: {
+        position: 'absolute',
+        right: -5,
+        bottom: -40,
+        justifyContent: 'center',
+        marginBottom: 5
     }
 })
 
