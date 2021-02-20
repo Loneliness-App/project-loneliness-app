@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, StyleSheet, Button, TextInput, TouchableOpacity} from 'react-native'
+import {View, StyleSheet, Keyboard, Dimensions, InputAccessoryView, Button, TextInput, TouchableOpacity, TouchableWithoutFeedback} from 'react-native'
 import {Feather} from '@expo/vector-icons'
 import BigHeaderText from '../components/BigHeaderText'
 import CopyButton from '../components/CopyButton'
@@ -24,38 +24,48 @@ class RequestDescription extends Component {
     saveText() {
         this.setState({isEditable: false})
         this.textInput.blur()
+        Keyboard.dismiss()
     }
 
     render() {
+        const inputAccessoryViewID = 'requestDescription';
         return (
-            <View style={styles.container}>
-                <BigHeaderText>{this.props.route.params.title}</BigHeaderText>
-                <View style={styles.alert}>
-                    <View style={styles.textInputContainer}>
-                        <TextInput 
-                            style={styles.alertText}
-                            multiline = {true}
-                            editable = {this.state.isEditable}
-                            value = {this.state.description}
-                            onChangeText = {(description) => this.setState({description})}
-                            ref={(input) => { this.textInput = input; }}
-                            numberOfLines={15}
-                        />
-                        <TouchableOpacity
-                            onPress = {() => {this.editText()}}
-                            style={styles.editIcon}
-                        >   
-                            {this.state.isEditable 
-                                ? <Button title="Save" onPress = {() => {this.saveText()}}/>
-                                : <Feather name="edit" size={24} color="#007aff" />
-                            }
+            <TouchableWithoutFeedback onPress={() => {this.saveText()}} accessible={false}>
+                <View style={styles.container}>
+                    <BigHeaderText>{this.props.route.params.title}</BigHeaderText>
+                    <View style={styles.alert}>
+                        <View style={styles.textInputContainer}>
+                            <TextInput 
+                                style={styles.alertText}
+                                multiline = {true}
+                                editable = {this.state.isEditable}
+                                value = {this.state.description}
+                                onChangeText = {(description) => this.setState({description})}
+                                ref={(input) => { this.textInput = input; }}
+                                numberOfLines={15}
+                                inputAccessoryViewID={inputAccessoryViewID}
+                                autoCorrect={false}
+                            />
+                            <TouchableOpacity
+                                onPress = {() => {this.editText()}}
+                                style={styles.editIcon}
+                            >   
+                                {!this.state.isEditable &&
+                                    <Feather name="edit" size={24} color="#007aff" />
+                                }
 
-                        </TouchableOpacity>
+                            </TouchableOpacity>
+                        </View>
                     </View>
+                    <CopyButton title='Copy Request Link' link={this.state.link} color={{backgroundColor: '#007aff'}}/>
+                    <ShareButton title='Share' requestName={this.props.route.params.title} link={this.state.link} color={{backgroundColor: '#007aff'}}/>
+                    <InputAccessoryView nativeID={inputAccessoryViewID}>
+                            <View style={styles.accessory}>
+                                <Button onPress={() => {this.saveText()}} title="Save"/>
+                            </View>
+                    </InputAccessoryView>
                 </View>
-                <CopyButton title='Copy Request Link' link={this.state.link} color={{backgroundColor: '#007aff'}}/>
-                <ShareButton title='Share' requestName={this.props.route.params.title} link={this.state.link} color={{backgroundColor: '#007aff'}}/>
-            </View>
+            </TouchableWithoutFeedback>
         );
     }
 }
@@ -77,7 +87,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        maxHeight: 350, 
+        maxHeight: 300, 
         minHeight: 100
     },
     alertText: {
@@ -87,7 +97,6 @@ const styles = StyleSheet.create({
     },
     textInputContainer: {
         width: '100%',
-        alignItems: 'flex-end'
     },
     editIcon: {
         position: 'absolute',
@@ -95,6 +104,15 @@ const styles = StyleSheet.create({
         bottom: -40,
         justifyContent: 'center',
         marginBottom: 5
+    },
+    accessory: {
+        width: Dimensions.get('window').width,
+        height: 48,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        backgroundColor: '#F8F8F8',
+        paddingHorizontal: 8
     }
 })
 

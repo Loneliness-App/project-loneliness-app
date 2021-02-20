@@ -50,13 +50,13 @@ class ViewRequest extends Component {
     rightAction = (item) => {
         return (
             <View style={styles.rightIconContainer}>
-                <AntDesign 
-                    name="message1" 
-                    size={24} 
-                    color="#34C759" 
-                    onPress={() => {
-                        this.openMessages(item.phone)
-                }}/>
+                <TouchableOpacity onPress={() => {this.openMessages(item.phone)}}>
+                    <AntDesign 
+                        name="message1" 
+                        size={24} 
+                        color="#34C759" 
+                    />
+                </TouchableOpacity>
             </View>
         )
     }
@@ -64,14 +64,13 @@ class ViewRequest extends Component {
     leftAction = (item) => {
         return (
             <View style={styles.leftIconContainer}>
-                <AntDesign 
-                    name="close"
-                    size={24} 
-                    color="#ff5a5a"
-                    onPress={() => {
-                        this.deleteRecommendation(item.id)
-                    }}
-                />
+                <TouchableOpacity onPress={() => {this.deleteRecommendation(item.id)}}>
+                    <AntDesign 
+                        name="close"
+                        size={24} 
+                        color="#ff5a5a"
+                    />
+                </TouchableOpacity>
             </View>
         )
     }

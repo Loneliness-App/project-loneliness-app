@@ -13,7 +13,7 @@ const SubmitButton = (props) => {
                     activeOpacity={0.5} 
                     style={[styles.button, props.color, props.width, props.opacity]} 
                     onPress={() => {
-                        navigation.navigate(props.route, {name: props.name});
+                        navigation.navigate(props.route, {name: props.name, description: props.description});
                     }}
                 >
                     <Text style={styles.buttonText}>{props.title}</Text>

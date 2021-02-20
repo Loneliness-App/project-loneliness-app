@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, Text, StyleSheet, FlatList} from 'react-native'
+import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native'
 import {SearchBar, ListItem} from 'react-native-elements'
 import {AntDesign} from '@expo/vector-icons'
 
@@ -60,7 +60,9 @@ class Home extends Component {
                     />
                 </View>
                 <View style={styles.iconContainer}>
-                    <AntDesign name="pluscircle" size={56} color="#007aff" />
+                    <TouchableOpacity onPress = {() => {this.props.navigation.navigate('CreateRequest')}}>
+                        <AntDesign style={styles.addIcon} name="pluscircle" size={56} color="#007aff" />
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
     iconContainer: {
         width: '100%',
         alignItems: 'flex-end',
-        padding: 20
+        padding: 20, 
     }
 })
 
@@ -152,13 +154,13 @@ const recsData = [
     },
     {
         "id": 3,
-        "title": "Gym Workout Partners",
-        "subtitle": "From Natalie H."
+        "title": "Musicians to Jam With!",
+        "subtitle": "From Marcus P."
       },
       {
         "id": 4,
-        "title": "Fellow CS15 Students?",
-        "subtitle": "From Connor L."
+        "title": "NFL Fans",
+        "subtitle": "From Paula B."
       }
 ]
 

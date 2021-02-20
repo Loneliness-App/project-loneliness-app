@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, TextInput, Image, StyleSheet, TouchableOpacity} from 'react-native'
+import {View, TextInput, Image, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Platform} from 'react-native'
 import HeaderText from '../components/HeaderText'
 import SubmitButton from '../components/SubmitButton'
 import logo from '../assets/logo.png'
@@ -15,35 +15,40 @@ class NewUser extends Component {
     }
 
     render() {
+        const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
         return (
-            <View style={styles.container}>
-                <HeaderText>Tell Us About Yourself!</HeaderText>
-                <Image source={logo} style={styles.logo}/>
-                <TextInput 
-                    style={styles.input} 
-                    placeholder={'First Name'} 
-                    placeholderTextColor={'#9a9a9a'} 
-                    value = {this.state.firstName}
-                    onChangeText = {(firstName) => this.setState({firstName})}
-                    autoCorrect = {false}
-                />
-                <TextInput 
-                    style={styles.input} 
-                    placeholder={'Last Name'} 
-                    placeholderTextColor={'#9a9a9a'}
-                    value = {this.state.lastName}
-                    onChangeText = {(lastName) => this.setState({lastName})}
-                    autoCorrect = {false}
-                />
-                <SubmitButton 
-                    enabled={this.state.firstName !== "" && this.state.lastName !== ""} 
-                    title='Create' 
-                    route='AcceptContacts' 
-                    name={this.state.firstName} 
-                    color={{backgroundColor: '#007aff'}}
-                    opacity={this.state.firstName !== "" && this.state.lastName !== "" ? {opacity: 1.0} : {opacity: 0.5}}
-                />
-            </View>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                <View style={styles.container}>
+                    <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={keyboardVerticalOffset} contentContainerStyle={styles.avoidingViewContainer}>
+                        <HeaderText>Tell Us About Yourself!</HeaderText>
+                        <Image source={logo} style={styles.logo}/>
+                            <TextInput 
+                                style={styles.input} 
+                                placeholder={'First Name'} 
+                                placeholderTextColor={'#9a9a9a'} 
+                                value = {this.state.firstName}
+                                onChangeText = {(firstName) => this.setState({firstName})}
+                                autoCorrect = {false}
+                            />
+                            <TextInput 
+                                style={styles.input} 
+                                placeholder={'Last Name'} 
+                                placeholderTextColor={'#9a9a9a'}
+                                value = {this.state.lastName}
+                                onChangeText = {(lastName) => this.setState({lastName})}
+                                autoCorrect = {false}
+                            />
+                        <SubmitButton 
+                            enabled={this.state.firstName !== "" && this.state.lastName !== ""} 
+                            title='Create' 
+                            route='AcceptContacts' 
+                            name={this.state.firstName} 
+                            color={{backgroundColor: '#007aff'}}
+                            opacity={this.state.firstName !== "" && this.state.lastName !== "" ? {opacity: 1.0} : {opacity: 0.5}}
+                        />
+                    </KeyboardAvoidingView>
+                </View>
+            </TouchableWithoutFeedback>
         );
     }
 }
@@ -72,6 +77,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         fontSize: 18,
         fontWeight: '400'
+    },
+    avoidingViewContainer: {
+        width: 300,
+        alignItems: 'center'
     }
 })
 
