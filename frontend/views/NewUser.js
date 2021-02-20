@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import {View, TextInput, Image, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Platform} from 'react-native'
+import {View, TextInput, Image, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, 
+    Platform, Dimensions, InputAccessoryView, Button} from 'react-native'
 import HeaderText from '../components/HeaderText'
 import SubmitButton from '../components/SubmitButton'
 import logo from '../assets/logo.png'
@@ -16,6 +17,7 @@ class NewUser extends Component {
 
     render() {
         const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
+        const inputAccessoryViewID = 'newUser';
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <View style={styles.container}>
@@ -29,6 +31,7 @@ class NewUser extends Component {
                                 value = {this.state.firstName}
                                 onChangeText = {(firstName) => this.setState({firstName})}
                                 autoCorrect = {false}
+                                inputAccessoryViewID={inputAccessoryViewID}
                             />
                             <TextInput 
                                 style={styles.input} 
@@ -37,6 +40,7 @@ class NewUser extends Component {
                                 value = {this.state.lastName}
                                 onChangeText = {(lastName) => this.setState({lastName})}
                                 autoCorrect = {false}
+                                inputAccessoryViewID={inputAccessoryViewID}
                             />
                         <SubmitButton 
                             enabled={this.state.firstName !== "" && this.state.lastName !== ""} 
@@ -47,6 +51,11 @@ class NewUser extends Component {
                             opacity={this.state.firstName !== "" && this.state.lastName !== "" ? {opacity: 1.0} : {opacity: 0.5}}
                         />
                     </KeyboardAvoidingView>
+                    <InputAccessoryView nativeID={inputAccessoryViewID}>
+                            <View style={styles.accessory}>
+                                <Button onPress={Keyboard.dismiss} title="Done"/>
+                            </View>
+                    </InputAccessoryView>
                 </View>
             </TouchableWithoutFeedback>
         );
@@ -81,6 +90,15 @@ const styles = StyleSheet.create({
     avoidingViewContainer: {
         width: 300,
         alignItems: 'center'
+    },
+    accessory: {
+        width: Dimensions.get('window').width,
+        height: 48,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        backgroundColor: '#F8F8F8',
+        paddingHorizontal: 8
     }
 })
 

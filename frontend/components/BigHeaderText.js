@@ -11,7 +11,8 @@ class BigHeaderText extends Component {
   const styles = StyleSheet.create({
     headerText: {
       fontSize: 32,
-      fontWeight: '700'
+      fontWeight: '700',
+      textAlign: 'center'
     },
   });
 

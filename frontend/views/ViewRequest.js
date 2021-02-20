@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {View, StyleSheet, Text, FlatList, Linking, TouchableOpacity} from 'react-native'
 import {ListItem, Avatar} from 'react-native-elements'
-import { Ionicons, Feather, AntDesign, Entypo} from '@expo/vector-icons'
+import { Ionicons, Feather, AntDesign, Entypo, FontAwesome} from '@expo/vector-icons'
 import {Collapse, CollapseHeader, CollapseBody} from 'accordion-collapse-react-native'
 import {Swipeable} from 'react-native-gesture-handler'
 import * as Contacts from 'expo-contacts'
@@ -83,6 +83,9 @@ class ViewRequest extends Component {
             <Collapse style={styles.listItemContainer}>
                 <CollapseHeader style={{paddingHorizontal: 3}}>
                     <ListItem containerStyle={styles.listItem}>
+                        {item.new &&
+                            <FontAwesome name="circle" size={10} color="#007aff"/>
+                        }
                         {item.image  
                             ? <Avatar rounded size="medium" source={{uri: item.image }}/>
                             : <Avatar rounded overlayContainerStyle={{backgroundColor: '#c8c8c8'}} size="medium" title={item.title} titleStyle={{color: 'white'}}/>
@@ -207,7 +210,8 @@ const friendData = [
       "note": "John is a childhood friend of mine. He’s a sophomore at Brown University and I’m pretty sure he’s studying Sociology. You two have a shared love for coffee and sci-fi, hit him up!",
       "image": 'https://expertphotography.com/wp-content/uploads/2020/08/social-media-profile-photos-8.jpg',
       "phone": "234-567-8910",
-      "isAdded": false
+      "isAdded": false,
+      "new": true
     },
     {
       "id": 2,
@@ -217,7 +221,8 @@ const friendData = [
       "note": "",
       "image": 'https://t3.ftcdn.net/jpg/03/67/46/48/360_F_367464887_f0w1JrL8PddfuH3P2jSPlIGjKU2BI0rn.jpg',
       "phone": "234-567-8910",
-      "isAdded": false
+      "isAdded": false,
+      "new": true
     },
     {
       "id": 3,
@@ -227,7 +232,8 @@ const friendData = [
       "note": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       "image": "http://image10.photobiz.com/8451/16_20200621162347_8957713_large.jpg",
       "phone": "234-567-8910",
-      "isAdded": false
+      "isAdded": false,
+      "new": false
     },
     {
         "id": 4,
@@ -238,7 +244,8 @@ const friendData = [
         "image": "",
         "title": "EK",
         "phone": "234-567-8910",
-        "isAdded": false
+        "isAdded": false,
+        "new": false
     }
 ];
 
