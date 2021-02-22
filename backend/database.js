@@ -6,12 +6,7 @@ DB_UNAME = process.env.DB_UNAME;
 const sequelize = new Sequelize(DB_NAME, DB_UNAME, '', {
     host: 'localhost',
     dialect: 'postgres',
-    define: {
-        freezeTableName: true
-    }
 });
-
-//sequelize.authenticate().then(() => console.log("connected")).catch((err) => console.log("error: ", err));
 
 const KEY_LENGTH = 16;
 
@@ -30,7 +25,7 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING(KEY_LENGTH),
         allowNull: false,
     }
-}, {});
+});
 
 const Request = sequelize.define('Request', {
     id: {
@@ -39,16 +34,12 @@ const Request = sequelize.define('Request', {
         primaryKey: true,
         autoIncrement: true,
     },
-    userId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: "User",
-            key: "id",
-        },
-        allowNull: false,
-    },
     key: {
         type: DataTypes.STRING(KEY_LENGTH),
+        allowNull: false,
+    },
+    name: {
+        type: DataTypes.STRING,
         allowNull: false,
     },
     message: {
@@ -63,22 +54,6 @@ const Reply = sequelize.define('Reply', {
         primaryKey: true,
         autoIncrement: true,
     },
-    userId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: "User",
-            key: "id",
-        },
-        allowNull: false,
-    },
-    reqId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: "Request",
-            key: "id",
-        },
-        allowNull: false,
-    },
 });
 
 const Suggestion = sequelize.define('Suggestion', {
@@ -88,23 +63,25 @@ const Suggestion = sequelize.define('Suggestion', {
         primaryKey: true,
         autoIncrement: true,
     },
-    replyId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: "Reply",
-            key: "id",
-        },
-        allowNull: false,
-    },
     data: {
         type: DataTypes.JSON,
         allowNull: false,
     }
 });
 
-//sequelize.sync().then(() => console.log("synced")).catch((err) => console.log("error", err));
+User.hasMany(Request);
+Request.belongsTo(User);
 
-module.exports = {User, Request, Reply, Suggestion}
+User.hasMany(Reply);
+Reply.belongsTo(User);
+
+Request.hasMany(Reply);
+Reply.belongsTo(Request);
+
+Reply.hasMany(Suggestion);
+Suggestion.belongsTo(Reply);
+
+module.exports = { sequelize, Sequelize, User, Request, Reply, Suggestion }
 
 
 
