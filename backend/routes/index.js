@@ -37,22 +37,15 @@ router.get('/user/:id/request/:requestId/replies', (req, res) => {
 
 /*get request to show replies that a user has responded to*/
 router.get('/user/:userid/replies', function (req, res) {
-    //want every reply that matches userid
-    //using this list we want to retrun a list of requests
-
-    const relevantRequests = Reply.findAll({
-        attributes: ['reqId'],
-        where: {
-            userId = req.params.userid
-            /*-----userID reference the user who created the request---
-                    - we need a way to associate a user with requests that they 
-                      have responded to but have not created.
-                    - do we have a way to check which requests a user has been invited to?
-                    - I think it may actually make sense for userID in reply to NOT be linked to userID in user, because we are actually referencing different people.
-            */
-        }
-    })
-
+    Reply.findAll({
+      where: { "$User.id$": req.params.id },
+      include: [
+        { model: User, attributes: [] },
+        { model: Request, attributes: ["id", "name"]}],
+      attributes: [],
+  }).then(requests => res.json({
+      requests: requests.map(r => r.get())
+  }));
 })
 
 /*reply created when a user accepts a request*/

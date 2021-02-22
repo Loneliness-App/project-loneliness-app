@@ -2,6 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 
 DB_NAME = process.env.DB_NAME;
 DB_UNAME = process.env.DB_UNAME;
+console.log(process.env)
 
 const sequelize = new Sequelize(DB_NAME, DB_UNAME, '', {
     host: 'localhost',
@@ -80,6 +81,8 @@ Reply.belongsTo(Request);
 
 Reply.hasMany(Suggestion);
 Suggestion.belongsTo(Reply);
+
+sequelize.sync()
 
 module.exports = { sequelize, Sequelize, User, Request, Reply, Suggestion }
 
