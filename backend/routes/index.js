@@ -35,27 +35,24 @@ router.get('/user/:id/request/:requestId/replies', (req, res) => {
     });
 });
 
-/*get request to show replies that a user has responded to*/
 router.get('/user/:userid/replies', function (req, res) {
     Reply.findAll({
-      where: { "$User.id$": req.params.id },
+      where: { "$User.id$": req.params.userid },
       include: [
         { model: User, attributes: [] },
         { model: Request, attributes: ["id", "name"]}],
       attributes: [],
-  }).then(requests => res.json({
-      requests: requests.map(r => r.get())
-  }));
+  }).then(replies => res.json({
+    replies: replies.map(r => r.get())
+}));
 })
 
-/*reply created when a user accepts a request*/
 router.post('/user/:userid/reply/:replyid', function (req, res) {
     Reply.create(req.body).then((user) => res.json(user));
 })
 
-/*send contacts, update reply*/
 router.put('/user/:userid/reply/:replyid', function (req, res) {
-
+    
 })
 
 

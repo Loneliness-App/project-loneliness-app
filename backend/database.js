@@ -1,10 +1,11 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-DB_NAME = process.env.DB_NAME;
-DB_UNAME = process.env.DB_UNAME;
-console.log(process.env)
+// DB_NAME = process.env.DB_NAME;
+// DB_UNAME = process.env.DB_UNAME;
+DB_NAME = "lonliness";
+DB_UNAME = "clark2"
 
-const sequelize = new Sequelize(DB_NAME, DB_UNAME, '', {
+const sequelize = new Sequelize(DB_NAME, DB_UNAME, 'password', {
     host: 'localhost',
     dialect: 'postgres',
 });
