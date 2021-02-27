@@ -8,7 +8,8 @@ const router = express.Router();
 const { User, Request, Reply, Suggestion } = require('../database');
 
 router.get('/',
-    param('userId').isUUID(),
+    // Temporary - will base user off of authentication eventually
+    query('userId').isUUID(),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -18,7 +19,7 @@ router.get('/',
         let requests;
         try {
             requests = await Request.findAll({
-                where: { "$User.id$": req.params.userId },
+                where: { "$User.id$": req.query.userId },
                 include: { model: User, attributes: [] },
                 attributes: ["id", "name"]
             });
@@ -73,7 +74,7 @@ router.get('/:requestId',
         return res.json({
             name: request.name,
             message: request.message,
-            // TODO: add real links
+            // TODO: add real link system
             inviteLink: "https://google.com",
             replies: request.Replies.map(reply => ({
                 suggestions: reply.Suggestions.map(s => s.get()),
@@ -122,8 +123,6 @@ router.post('/',
 router.put('/:reqId',
     body('name').isString().optional(),
     body('message').isString().optional(),
-    // temporary
-    body('userId').isUUID(),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -134,9 +133,9 @@ router.put('/:reqId',
         try {
             request = await Request.findOne({ where: { id: req.params.reqId } });
             // TODO: get user based on authentication
-            if (req.body.userId != request.getUser().getId()) {
-                return res.sendStatus(StatusCodes.FORBIDDEN);
-            }
+            // if (req.body.userId != request.getUser().getId()) {
+            //     return res.sendStatus(StatusCodes.FORBIDDEN);
+            // }
             if (req.body.hasOwnProperty("name")) {
                 await request.setName(req.body.name);
             }
