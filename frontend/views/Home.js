@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {View, Text, StyleSheet, FlatList, TouchableOpacity, Modal} from 'react-native'
 import {SearchBar, ListItem} from 'react-native-elements'
-import {AntDesign} from '@expo/vector-icons'
+import {AntDesign, FontAwesome} from '@expo/vector-icons'
 import CreateRequestModal from '../components/CreateRequestModal'
 
 class Home extends Component {
@@ -23,9 +23,24 @@ class Home extends Component {
         this.setState({showModal: false})
     }
 
-    renderItem = ({item}) => (
+    renderRequest = ({item}) => (
         <ListItem style={styles.listItem} bottomDivider onPress={() => {
             this.props.navigation.navigate('ViewRequest', {title: item.title});
+        }}>
+            <ListItem.Content>
+                <ListItem.Title style={styles.listTitle}>{item.title}</ListItem.Title>
+                <ListItem.Subtitle style={styles.listSubtitle}>{item.subtitle}</ListItem.Subtitle>
+            </ListItem.Content>
+            {item.new &&
+                <FontAwesome name="circle" size={10} color="#007aff"/>
+            }
+            <ListItem.Chevron size={24} />
+        </ListItem>
+    )
+
+    renderReply = ({item}) => (
+        <ListItem style={styles.listItem} bottomDivider onPress={() => {
+            this.props.navigation.navigate('ReplyDescription', {title: item.title, subtitle: item.subtitle});
         }}>
             <ListItem.Content>
                 <ListItem.Title style={styles.listTitle}>{item.title}</ListItem.Title>
@@ -60,7 +75,7 @@ class Home extends Component {
                     <Text style={styles.sectionHeader}>My Requests</Text>
                     <FlatList
                         data = {requestsData}
-                        renderItem = {this.renderItem}
+                        renderItem = {this.renderRequest}
                         keyExtractor = {item => item.id.toString()}
                         style= {styles.listContainer}
                     />
@@ -69,7 +84,7 @@ class Home extends Component {
                     <Text style={styles.sectionHeader}>Replies</Text>
                     <FlatList
                         data = {recsData}
-                        renderItem = {this.renderItem}
+                        renderItem = {this.renderReply}
                         keyExtractor = {item => item.id.toString()}
                         style= {styles.listContainer}
                     />
@@ -140,23 +155,27 @@ const requestsData = [
     {
       "id": 1,
       "title": "Reading Buddies",
-      "subtitle": "5 new recommendations"
+      "subtitle": "5 new recommendations",
+      "new": true
     },
     {
       "id": 2,
       "title": "Boba",
-      "subtitle": "2 recommendations"
+      "subtitle": "2 new recommendations",
+      "new": true
     },
     {
       "id": 3,
       "title": "Netflix Party Group",
-      "subtitle": "8 recommendations"
+      "subtitle": "8 recommendations",
+      "new": false
     },
     {
         "id": 4,
         "title": "Pickup Basketball",
-        "subtitle": "1 recommendation"
-      }
+        "subtitle": "1 recommendation",
+        "new": false
+    }
 ];
 
 const recsData = [
@@ -178,7 +197,7 @@ const recsData = [
       {
         "id": 4,
         "title": "NFL Fans",
-        "subtitle": "From Paula B."
+        "subtitle": "From Paula B.",
       }
 ]
 

@@ -18,6 +18,7 @@ import RecommendationSent from './views/Recommending/RecommendationSent'
 import ChooseContacts from './views/Recommending/ChooseContacts'
 import WriteNoteAndroid from './views/Recommending/WriteNoteAndroid'
 import WriteNoteIOS from './views/Recommending/WriteNoteIOS'
+import ReplyDescription from './views/ReplyDescription'
 
 const Stack = createStackNavigator();
 
@@ -88,7 +89,17 @@ export default function App() {
             headerRightContainerStyle: {marginRight: 15, marginTop: 2}
           }}
         />
-                <Stack.Screen
+         <Stack.Screen           
+          name="ReplyDescription"
+          component={ReplyDescription}
+          options={{
+            title: "",
+            headerStyle: {
+              height: 100
+            },
+          }}
+        />
+        <Stack.Screen
           name="RequestContact"
           component={RequestContact}
           options={{headerShown: false}}

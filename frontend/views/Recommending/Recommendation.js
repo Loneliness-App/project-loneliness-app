@@ -24,9 +24,11 @@ class Recommendation extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        margin: 25, 
-        paddingVertical: 100,
+        marginHorizontal: 25, 
+        marginTop: -20,
+        paddingVertical: 50,
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: 'white'
     },
     logo: {

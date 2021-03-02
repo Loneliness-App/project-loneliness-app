@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, StyleSheet, Text, FlatList, TouchableHighlight, Modal, Image, Platform} from 'react-native'
+import {View, StyleSheet, Text, FlatList, TouchableHighlight, TouchableOpacity, Modal, Image, Platform} from 'react-native'
 import {ListItem, Avatar, SearchBar} from 'react-native-elements'
 import HeaderText from '../../components/HeaderText'
 import * as Permissions from 'expo-permissions';
@@ -62,7 +62,7 @@ class ChooseContacts extends Component {
 
     renderItem = ({item}) => (
         item.added == true?
-        <TouchableHighlight style={styles.listItemContainer} underlayColor="gray" onPress = {()=>{
+        <TouchableOpacity style={styles.listItemContainer} activeOpacity={0.5} underlayColor="gray" onPress = {()=>{
             
             var curimage = null
             if (item.image !== undefined){
@@ -87,8 +87,8 @@ class ChooseContacts extends Component {
                 </ListItem>
             </View>
 
-        </TouchableHighlight>
-        :<TouchableHighlight style={styles.listItemContainer} underlayColor="white" onPress = {()=>{
+        </TouchableOpacity>
+        :<TouchableHighlight style={styles.listItemContainer} activeOpacity={0.5} underlayColor="white" onPress = {()=>{
             
             var curimage = null
             if (item.image !== undefined){
@@ -130,18 +130,18 @@ class ChooseContacts extends Component {
                         <Image source={icon} style={styles.logo}/>
                         <HeaderText style = {{padding: 20, textAlign: 'center'}}>Recommendation {"\n"}Sent!</HeaderText>
                         <View style={styles.buttonContainer}>
-                            <TouchableHighlight style={styles.button} onPress = {()=>{
+                            <TouchableOpacity style={styles.button} activeOpacity={0.5} onPress = {()=>{
                                 this.setState({show:false})
                                 this.setState({contact: this.decorate(this.state.contacts, this.props.route.params.originalobj)})
                                 }}>
                                 <Text style={styles.buttonText}>Recommend More</Text>
-                            </TouchableHighlight>
-                            <TouchableHighlight style={styles.button} onPress = {()=>{
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.button} activeOpacity={0.5} onPress = {()=>{
                                 this.props.navigation.navigate('Home');
                                 this.setState({show:false})
                             }}>
                                 <Text style={styles.buttonText}>Done</Text>
-                            </TouchableHighlight>
+                            </TouchableOpacity>
                         </View>
                     </View>
                     </View>

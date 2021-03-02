@@ -57,7 +57,7 @@ class RequestDescription extends Component {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <CopyButton title='Copy Request Link' link={this.state.link} color={{backgroundColor: '#007aff'}}/>
+                    <CopyButton title='Copy Link' link={this.state.link} color={{backgroundColor: '#007aff'}}/>
                     <ShareButton title='Share' requestName={this.props.route.params.title} link={this.state.link} color={{backgroundColor: '#007aff'}}/>
                     <InputAccessoryView nativeID={inputAccessoryViewID}>
                             <View style={styles.accessory}>

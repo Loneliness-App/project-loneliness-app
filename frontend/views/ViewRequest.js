@@ -126,9 +126,6 @@ class ViewRequest extends Component {
                             ?  <TouchableOpacity onPress = {() => {this.openMessages(item.phone)}}><AntDesign name="message1" size={24} color="#34C759"/></TouchableOpacity>
                             : <TouchableOpacity onPress = {() => {this.openContacts(item)}}><Feather name="plus" size={22} color="#007aff"/></TouchableOpacity>
                         }
-                        {/* {item.new &&
-                            <FontAwesome name="circle" size={10} color="#007aff"/>
-                        } */}
                     </ListItem>
                 </CollapseHeader>
                 { item.note && 

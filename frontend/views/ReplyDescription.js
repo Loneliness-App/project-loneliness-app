@@ -1,37 +1,36 @@
 import React, { Component } from 'react'
-import {View, StyleSheet, Keyboard, Dimensions, InputAccessoryView, Button, TextInput, TouchableOpacity, TouchableWithoutFeedback} from 'react-native'
-import {Feather} from '@expo/vector-icons'
+import {View, StyleSheet, TextInput, Text} from 'react-native'
 import BigHeaderText from '../components/BigHeaderText'
-import CopyButton from '../components/CopyButton'
-import ShareButton from '../components/ShareButton'
+import SubmitButton from '../components/SubmitButton'
 
-class RequestCreated extends Component {
+class ReplyDescription extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            link: 'https://myrequestlink.brown.edu'
+           
         }
     }
 
     render() {
         return (
                 <View style={styles.container}>
-                    <BigHeaderText>{this.props.route.params.name}</BigHeaderText>
+                    <BigHeaderText>{this.props.route.params.title}</BigHeaderText>
+                    <Text style={styles.subtitle}>{this.props.route.params.subtitle}</Text>
                     <View style={styles.alert}>
                         <View style={styles.textInputContainer}>
                             <TextInput 
                                 style={styles.alertText}
                                 multiline = {true}
                                 editable = {false}
-                                value = {this.props.route.params.description}
+                                value = {replyDescription}
                                 numberOfLines={15}
                                 autoCorrect={false}
                             />
                         </View>
                     </View>
-                    <CopyButton title='Copy Link' link={this.state.link} color={{backgroundColor: '#007aff'}}/>
-                    <ShareButton title='Share' requestName={this.props.route.params.name} link={this.state.link} color={{backgroundColor: '#007aff'}}/>
+                    <SubmitButton title='Recommend' route='ChooseContacts' color={{backgroundColor: '#007aff'}}/>
+                    <SubmitButton title='Close Reply' route='Home' color={{backgroundColor: '#e82020'}}/>
                 </View>
         );
     }
@@ -65,7 +64,13 @@ const styles = StyleSheet.create({
     },
     textInputContainer: {
         width: '100%'
+    },
+    subtitle: {
+        fontSize: 24,
+        marginTop: 10
     }
 })
 
-export default RequestCreated;
+const replyDescription = "I'm looking for a few new workout partners. I just switched gyms last month and I don't really know anyone that goes to my new gym. If you know anyone who goes to the Planet Fitness in Providence, please let me know because I hate working out alone. Thanks!"
+
+export default ReplyDescription;
