@@ -7,7 +7,7 @@ function openAppSettings() {
     if (Platform.OS === 'ios') {
       Linking.openURL("app-settings:");
     } else {
-      RNAndroidOpenSettings.appDetailsSettings();
+      Linking.openSettings();
     }
 }
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {View, TextInput, Image, StyleSheet, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, 
     Platform, Dimensions, InputAccessoryView, Button} from 'react-native'
 import HeaderText from '../components/HeaderText'
-import SubmitButton from '../components/SubmitButton'
+import InteractiveSubmitButton from '../components/InteractiveSubmitButton'
 import logo from '../assets/logo.png'
 
 class NewUser extends Component {
@@ -42,7 +42,7 @@ class NewUser extends Component {
                                 autoCorrect = {false}
                                 inputAccessoryViewID={inputAccessoryViewID}
                             />
-                        <SubmitButton 
+                        <InteractiveSubmitButton 
                             enabled={this.state.firstName !== "" && this.state.lastName !== ""} 
                             title='Create' 
                             route='AcceptContacts' 
@@ -50,6 +50,7 @@ class NewUser extends Component {
                             color={{backgroundColor: '#007aff'}}
                             opacity={this.state.firstName !== "" && this.state.lastName !== "" ? {opacity: 1.0} : {opacity: 0.5}}
                         />
+                        <Button title="Switch Flows" onPress={() => {this.props.navigation.navigate('Recommendation');}}/>
                     </KeyboardAvoidingView>
                     <InputAccessoryView nativeID={inputAccessoryViewID}>
                             <View style={styles.accessory}>

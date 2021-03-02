@@ -2,16 +2,20 @@ import React from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 
-const SubmitButton = (props) => {
-    
+const InteractiveSubmitButton = (props) => {
     const navigation = useNavigation();
 
     return(
         <>
             <View style={styles.container}>
-                <TouchableOpacity activeOpacity={0.5} style={[styles.button, props.color, props.width]} onPress={() => {
-                    navigation.navigate(props.route, {name: props.name});
-                }}>
+                <TouchableOpacity 
+                    disabled={!props.enabled}
+                    activeOpacity={0.5} 
+                    style={[styles.button, props.color, props.width, props.opacity]} 
+                    onPress={() => {
+                        navigation.navigate(props.route, {name: props.name, description: props.description});
+                    }}
+                >
                     <Text style={styles.buttonText}>{props.title}</Text>
                 </TouchableOpacity>
             </View>
@@ -21,11 +25,11 @@ const SubmitButton = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 15
+        padding: 10
     },
     button: {
         padding: 10,
-        width: 120,
+        paddingHorizontal: 30,
         height: 50,
         borderRadius: 10,
         alignItems: 'center',
@@ -39,4 +43,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SubmitButton;
+export default InteractiveSubmitButton;

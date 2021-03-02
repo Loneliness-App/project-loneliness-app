@@ -3,14 +3,20 @@ import 'react-native-gesture-handler'
 import {NavigationContainer} from '@react-navigation/native'
 import {createStackNavigator} from '@react-navigation/stack'
 import {StyleSheet} from 'react-native'
-import NewUser from './views/NewUser'
 import AcceptContacts from './views/AcceptContacts'
 import ContactsError from './views/ContactsError'
-import Home from './views/Home'
-import ViewRequest from './views/ViewRequest'
 import RequestDescription from './views/RequestDescription'
 import RequestCreated from './views/RequestCreated'
 import HomeHeaderIcon from './components/HomeHeaderIcon'
+import NewUser from './views/NewUser'
+import Home from './views/Home'
+import ViewRequest from './views/ViewRequest'
+import RequestContact from './views/Recommending/RequestContact'
+import Recommendation from './views/Recommending/Recommendation'
+import Reject from './views/Recommending/Reject'
+import RecommendationSent from './views/Recommending/RecommendationSent'
+import ChooseContacts from './views/Recommending/ChooseContacts'
+import WriteNote from './views/Recommending/WriteNote'
 
 const Stack = createStackNavigator();
 
@@ -81,6 +87,46 @@ export default function App() {
             headerRightContainerStyle: {marginRight: 15, marginTop: 2}
           }}
         />
+                <Stack.Screen
+          name="RequestContact"
+          component={RequestContact}
+          options={{headerShown: false}}
+        /> 
+        <Stack.Screen
+          name="Recommendation"
+          component={Recommendation}
+          options={{headerShown: false}}
+        /> 
+        <Stack.Screen
+          name="ChooseContacts"
+          component={ChooseContacts}
+          options={{
+            title: "Choose Contact",
+            headerStyle: {
+              height: 100
+            }
+          }}
+        /> 
+        <Stack.Screen
+          name="WriteNote"
+          component={WriteNote}
+          options={{
+            title: "Write Recommendation",
+            headerStyle: {
+              height: 100
+            }
+          }}
+        /> 
+        <Stack.Screen
+          name="RecommendationSent"
+          component={RecommendationSent}
+          options={{headerShown: false}}
+        /> 
+        <Stack.Screen
+          name="Reject"
+          component={Reject}
+          options={{headerShown: false}}
+        /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
