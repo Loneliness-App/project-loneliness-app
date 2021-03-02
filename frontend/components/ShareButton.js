@@ -7,8 +7,8 @@ const ShareButton = (props) => {
     const share = () => {
         ActionSheetIOS.showShareActionSheetWithOptions({
             url: props.link,
-            subject: 'Reading Buddies Request',
-            message: `I'm looking for some recommendations for my ${props.requestName} friend request on the Project Loneliness app!`
+            // title: 'Reading Buddies Request',
+            // message: `I'm looking for some recommendations for my ${props.requestName} friend request on the Project Loneliness app!`
         }, () => {}, () => {})
     }
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {View, StyleSheet, Text, FlatList, Linking, TouchableOpacity} from 'react-native'
-import {ListItem, Avatar} from 'react-native-elements'
+import {ListItem, Avatar, ButtonGroup} from 'react-native-elements'
 import { Ionicons, Feather, AntDesign, Entypo, FontAwesome} from '@expo/vector-icons'
 import {Collapse, CollapseHeader, CollapseBody} from 'accordion-collapse-react-native'
 import {Swipeable} from 'react-native-gesture-handler'
@@ -11,9 +11,13 @@ class ViewRequest extends Component {
 
     constructor(props) {
         super(props)
+        this.allData = friendData
         this.state = {
-            data: friendData
+            data: this.allData,
+            openItems: [],
+            selectedIndex: 0
         }
+        this.updateIndex = this.updateIndex.bind(this)
     }
 
     openContacts = async (item) => {
@@ -29,12 +33,25 @@ class ViewRequest extends Component {
         }
         if (status === 'granted') {
             try {
-                await Contacts.addContactAsync(contact)
+                item.contactID = await Contacts.addContactAsync(contact)
                 item.isAdded = true
                 this.forceUpdate()
             } catch (e) {
                 console.log(e)
             }
+        }
+    }
+
+    updateIndex (selectedIndex) {
+        this.setState({selectedIndex})
+        if (selectedIndex == 0) {
+            this.setState({data: this.allData})
+        } else if (selectedIndex == 1) {
+            const addedData = this.allData.filter(item => item.isAdded)
+            this.setState({data: addedData})
+        } else {
+            const unaddedData = this.allData.filter(item => !item.isAdded)
+            this.setState({data: unaddedData})
         }
     }
 
@@ -75,16 +92,27 @@ class ViewRequest extends Component {
         )
     }
 
+    setOpenItems(index) {
+        if (this.state.openItems.includes(index)) {
+            let newOpenItems = this.state.openItems.filter(item => item !== index)
+            this.setState({openItems: newOpenItems})
+        } else {
+            this.state.openItems.push(index)
+            this.setState({openItems: this.state.openItems})
+        }
+    }
+
     renderItem = ({item}) => (
         <Swipeable
             renderRightActions={() => this.rightAction(item)}
             renderLeftActions={() => this.leftAction(item)}
         >
-            <Collapse style={styles.listItemContainer}>
+            <Collapse style={styles.listItemContainer} onToggle = {() => this.setOpenItems(item.id)}>
                 <CollapseHeader style={{paddingHorizontal: 3}}>
                     <ListItem containerStyle={styles.listItem}>
-                        {item.new &&
-                            <FontAwesome name="circle" size={10} color="#007aff"/>
+                        {this.state.openItems.includes(item.id) && item.note.length > 0
+                            ? <ListItem.Chevron size={22} color="#007aff" style={{transform: [{rotate: '90deg'}]}}/>
+                            : <ListItem.Chevron size={22} color="#007aff"/>
                         }
                         {item.image  
                             ? <Avatar rounded size="medium" source={{uri: item.image }}/>
@@ -95,10 +123,12 @@ class ViewRequest extends Component {
                             <ListItem.Subtitle style={styles.listSubtitle}>{item.subtitle}</ListItem.Subtitle>
                         </ListItem.Content>
                         {item.isAdded
-                            ? <Entypo name="check" size={22} color="#34c759" />
+                            ?  <TouchableOpacity onPress = {() => {this.openMessages(item.phone)}}><AntDesign name="message1" size={24} color="#34C759"/></TouchableOpacity>
                             : <TouchableOpacity onPress = {() => {this.openContacts(item)}}><Feather name="plus" size={22} color="#007aff"/></TouchableOpacity>
                         }
-                        
+                        {/* {item.new &&
+                            <FontAwesome name="circle" size={10} color="#007aff"/>
+                        } */}
                     </ListItem>
                 </CollapseHeader>
                 { item.note && 
@@ -111,6 +141,8 @@ class ViewRequest extends Component {
     )
 
     render() {
+        const buttons = ['All', 'Added', 'Unadded']
+        const {selectedIndex} = this.state
         return (
             <View style={styles.container}>
                  <View style={styles.iconContainer}>
@@ -121,11 +153,21 @@ class ViewRequest extends Component {
                     </TouchableOpacity>
                 </View>
                 <BigHeaderText>{this.props.route.params.title}</BigHeaderText>
+                <ButtonGroup 
+                    buttons={buttons} 
+                    containerStyle={styles.buttonGroupContainer} 
+                    textStyle={styles.buttonGroupText}
+                    onPress = {this.updateIndex}
+                    selectedIndex = {selectedIndex}
+                    selectedButtonStyle = {{backgroundColor: '#007aff'}}
+                    selectedTextStyle={{color: 'white'}}
+                />
                 <FlatList
                     data={this.state.data}
                     style={styles.listContainer}
                     renderItem={this.renderItem}
                     keyExtractor = {item => item.id.toString()}
+                    extraData={this.state.opened}
                 />
             </View>
         );
@@ -146,7 +188,7 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         width: '100%',
-        marginTop: 10,
+        marginTop: 5,
     },
     listItemContainer: {
         width: '100%',
@@ -160,7 +202,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.5,
-        elevation: 4,
+        elevation: 4
     }, 
     listItem: {
         backgroundColor: 'white'
@@ -198,6 +240,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 36,
         marginRight: 12
+    },
+    buttonGroupContainer: {
+        marginTop: 15,
+        width: '100%',
+        height: 32
     }
 })
 
@@ -211,7 +258,8 @@ const friendData = [
       "image": 'https://expertphotography.com/wp-content/uploads/2020/08/social-media-profile-photos-8.jpg',
       "phone": "234-567-8910",
       "isAdded": false,
-      "new": true
+      "new": true,
+      "contactID": null
     },
     {
       "id": 2,
@@ -222,7 +270,8 @@ const friendData = [
       "image": 'https://t3.ftcdn.net/jpg/03/67/46/48/360_F_367464887_f0w1JrL8PddfuH3P2jSPlIGjKU2BI0rn.jpg',
       "phone": "234-567-8910",
       "isAdded": false,
-      "new": true
+      "new": true,
+      "contactID": null
     },
     {
       "id": 3,
@@ -233,7 +282,8 @@ const friendData = [
       "image": "http://image10.photobiz.com/8451/16_20200621162347_8957713_large.jpg",
       "phone": "234-567-8910",
       "isAdded": false,
-      "new": false
+      "new": false,
+      "contactID": null
     },
     {
         "id": 4,
@@ -245,8 +295,9 @@ const friendData = [
         "title": "EK",
         "phone": "234-567-8910",
         "isAdded": false,
-        "new": false
-    }
+        "new": false,
+        "contactID": null
+    }, 
 ];
 
 export default ViewRequest;

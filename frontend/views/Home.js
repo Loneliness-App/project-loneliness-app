@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native'
+import {View, Text, StyleSheet, FlatList, TouchableOpacity, Modal} from 'react-native'
 import {SearchBar, ListItem} from 'react-native-elements'
 import {AntDesign} from '@expo/vector-icons'
+import CreateRequestModal from '../components/CreateRequestModal'
 
 class Home extends Component {
 
@@ -9,12 +10,18 @@ class Home extends Component {
         super(props)
         this.state = {
             search: '',
+            showModal: false
         };
+        this.hideModal = this.hideModal.bind(this)
     }
 
     updateSearch = (search) => {
         this.setState({ search });
     };
+
+    hideModal() {
+        this.setState({showModal: false})
+    }
 
     renderItem = ({item}) => (
         <ListItem style={styles.listItem} bottomDivider onPress={() => {
@@ -33,6 +40,14 @@ class Home extends Component {
 
         return (
             <View style={styles.container}>
+                <Modal 
+                    animationType={'slide'}
+                    transparent={false}
+                    visible={this.state.showModal}
+                    style={styles.modal}
+                >
+                    <CreateRequestModal hideModal={this.hideModal} navigation={this.props.navigation}/>
+                </Modal>
                 <SearchBar
                     platform = {'ios'}
                     containerStyle = {styles.searchContainer}
@@ -51,7 +66,7 @@ class Home extends Component {
                     />
                 </View>
                 <View style={styles.sectionContainer}>
-                    <Text style={styles.sectionHeader}>Recommendations To Give</Text>
+                    <Text style={styles.sectionHeader}>Replies</Text>
                     <FlatList
                         data = {recsData}
                         renderItem = {this.renderItem}
@@ -60,7 +75,7 @@ class Home extends Component {
                     />
                 </View>
                 <View style={styles.iconContainer}>
-                    <TouchableOpacity onPress = {() => {this.props.navigation.navigate('CreateRequest')}}>
+                    <TouchableOpacity  onPress = {() => {this.setState({showModal: true})}}>
                         <AntDesign style={styles.addIcon} name="pluscircle" size={56} color="#007aff" />
                     </TouchableOpacity>
                 </View>
@@ -114,6 +129,9 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'flex-end',
         padding: 20, 
+    },
+    modal: {
+        backgroundColor: 'red'
     }
 })
 

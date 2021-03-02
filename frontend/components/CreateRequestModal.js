@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import {View, Text, TextInput, TouchableWithoutFeedback, Keyboard, Dimensions, InputAccessoryView, Button, StyleSheet} from 'react-native'
-import SubmitButton from '../components/SubmitButton'
+import {View, Text, TextInput, TouchableWithoutFeedback, TouchableOpacity, Keyboard, Dimensions, InputAccessoryView, Button, StyleSheet} from 'react-native'
+import {AntDesign} from '@expo/vector-icons'
 
-class CreateRequest extends Component {
+class CreateRequestModal extends Component {
 
     constructor(props) {
         super(props)
@@ -17,6 +17,13 @@ class CreateRequest extends Component {
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <View style={styles.container}>
+                    <TouchableOpacity style={styles.closeButton} onPress= {this.props.hideModal}>
+                        <AntDesign 
+                            name="close"
+                            size={26} 
+                            color="#ff5a5a"
+                        />
+                    </TouchableOpacity>
                     <View style={styles.titleContainer}>
                         <Text style={styles.fieldText}>Title</Text>
                         <TextInput 
@@ -43,15 +50,19 @@ class CreateRequest extends Component {
                             autoCorrect={false}
                         />
                     </View>
-                    <SubmitButton 
-                        enabled={this.state.title !== "" && this.state.description !== ""} 
-                        title='Create' 
-                        route='RequestCreated' 
-                        description={this.state.description}
-                        name={this.state.title}
-                        color={{backgroundColor: '#007aff'}}
-                        opacity={this.state.title !== "" && this.state.description !== "" ? {opacity: 1.0} : {opacity: 0.5}}
-                    />
+                    <View style={styles.createButtonContainer}>
+                        <TouchableOpacity 
+                            disabled={!(this.state.title !== "" && this.state.description !== "")}
+                            activeOpacity={0.5} 
+                            style={[styles.createButton, this.state.title !== "" && this.state.description !== "" ? {opacity: 1.0} : {opacity: 0.5}]} 
+                            onPress={() => {
+                                this.props.navigation.navigate('RequestCreated', {name: this.state.title, description: this.state.description});
+                                setTimeout(this.props.hideModal, 500);
+                            }}
+                        >
+                            <Text style={styles.createButtonText}>Create</Text>
+                        </TouchableOpacity>
+                     </View>
                     <InputAccessoryView nativeID={accessoryViewID}>
                         <View style={styles.accessory}>
                             <Button onPress={Keyboard.dismiss} title="Done"/>
@@ -65,10 +76,10 @@ class CreateRequest extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: 'white',
         width: '100%',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingTop: 80
     },
     titleContainer: {
         width: '100%',
@@ -112,7 +123,29 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#F8F8F8',
         paddingHorizontal: 8
+    },
+    closeButton: {
+        alignSelf: 'flex-end',
+        paddingHorizontal: 25
+    },
+    createButton: {
+        padding: 10,
+        paddingHorizontal: 30,
+        height: 50,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 20,
+        backgroundColor: '#007aff'
+    },
+    createButtonText: {
+        color: 'white',
+        fontWeight: '400',
+        fontSize: 18
+    },
+    createButtonContainer: {
+        padding: 10
     }
 })
 
-export default CreateRequest;
+export default CreateRequestModal;
