@@ -10,35 +10,23 @@ const sequelize = new Sequelize(DB_NAME, DB_UNAME, 'password', {
     dialect: 'postgres',
 });
 
-const KEY_LENGTH = 16;
-
 const User = sequelize.define('User', {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false,
-    },
-    key: {
-        type: DataTypes.STRING(KEY_LENGTH),
         allowNull: false,
     }
 });
 
 const Request = sequelize.define('Request', {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
-    },
-    key: {
-        type: DataTypes.STRING(KEY_LENGTH),
-        allowNull: false,
     },
     name: {
         type: DataTypes.STRING,
@@ -51,10 +39,9 @@ const Request = sequelize.define('Request', {
 
 const Reply = sequelize.define('Reply', {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
     },
 });
 
@@ -65,9 +52,14 @@ const Suggestion = sequelize.define('Suggestion', {
         primaryKey: true,
         autoIncrement: true,
     },
-    data: {
-        type: DataTypes.JSON,
-        allowNull: false,
+    name: {
+        type: DataTypes.STRING,
+    },
+    phone: {
+        type: DataTypes.STRING(10),
+    },
+    message: {
+        type: DataTypes.STRING,
     }
 });
 
@@ -83,10 +75,7 @@ Reply.belongsTo(Request);
 Reply.hasMany(Suggestion);
 Suggestion.belongsTo(Reply);
 
-sequelize.sync()
-
 module.exports = { sequelize, Sequelize, User, Request, Reply, Suggestion }
-
 
 
 

@@ -1,4 +1,8 @@
 var express = require('express');
+const { body, validationResult } = require('express-validator');
+const { StatusCodes } = require('http-status-codes');
+const { v4: uuidv4 } = require('uuid');
+
 var router = express.Router();
 const { User, Request, Reply, Suggestion } = require('../database');
 
@@ -47,12 +51,80 @@ router.get('/user/:userid/replies', function (req, res) {
 }));
 })
 
-router.post('/user/:userid/reply/:replyid', function (req, res) {
-    Reply.create(req.body).then((user) => res.json(user));
+/*
+Body shuold be 
+{
+    requestId : uuid
+    suggestions : []
+}
+*/
+router.post('/user/:userid/reply/', async (req, res) => {
+    const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(StatusCodes.NOT_FOUND).json({ errors: errors.array() });
+        }
+    let reply;
+    let replyId = uuidv4()
+    //check if the user exists, if so create reply and add to user.
+    
+    try {
+        reply = await Reply.create({
+            id: replyId
+        });
+
+        let user = await User.findOne({ where: { id: req.params.userid} });
+        if (user == null) {
+            return res.status(StatusCodes.NOT_FOUND).send('User not found.');
+        }
+
+        let request = await Request.findOne({where: {id : req.body.requestId}})
+        if (request == null) {
+            return res.status(StatusCodes.NOT_FOUND).send('Recommendation request not found');
+        }
+
+        await request.addReply(reply);
+        await user.addReply(reply);
+        
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(StatusCodes.BAD_GATEWAY);
+    }
+    return res.status(StatusCodes.OK).json({
+        id: replyId,
+    });
+    
+    
+
 })
 
-router.put('/user/:userid/reply/:replyid', function (req, res) {
-    
+/*
+Body:
+{
+    suggestions: []
+}
+*/
+router.put('/user/:userid/reply/:replyid', async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(StatusCodes.NOT_FOUND).json({ errors: errors.array() });
+    }
+
+    let reply;
+    try {
+        reply = await Reply.findOne({where : {id : req.params.replyid}});
+        if (reply == null) {
+            return res.status(StatusCodes.NOT_FOUND).send('Reply not found.');
+        }
+        //for each suggestion: create, and add to reply, 
+        for (let s of req.body.suggestions) {
+            suggestion = await Suggestion.create(s);
+            reply.addSuggestion(suggestion);
+        }
+
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(StatusCodes.BAD_GATEWAY);
+    }
 })
 
 
