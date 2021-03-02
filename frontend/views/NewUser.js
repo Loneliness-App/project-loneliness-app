@@ -16,7 +16,7 @@ class NewUser extends Component {
     }
 
     render() {
-        const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
+        const keyboardVerticalOffset = Platform.OS === 'ios' ? 20 : 0
         const inputAccessoryViewID = 'newUser';
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>

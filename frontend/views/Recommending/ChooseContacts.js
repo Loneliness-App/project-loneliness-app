@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, StyleSheet, Text, FlatList, TouchableHighlight, Modal, Image} from 'react-native'
+import {View, StyleSheet, Text, FlatList, TouchableHighlight, Modal, Image, Platform} from 'react-native'
 import {ListItem, Avatar, SearchBar} from 'react-native-elements'
 import HeaderText from '../../components/HeaderText'
 import * as Permissions from 'expo-permissions';
@@ -68,7 +68,11 @@ class ChooseContacts extends Component {
             if (item.image !== undefined){
                 curimage = item.image
             }
-            this.props.navigation.navigate('WriteNote', {name: item.name, image: curimage, number: item.phoneNumbers[0].number, object: item})
+            if (Platform.OS === 'android') {
+                this.props.navigation.navigate('WriteNoteAndroid', {name: item.name, image: curimage, number: item.phoneNumbers[0].number, object: item})
+            } else {
+                this.props.navigation.navigate('WriteNoteIOS', {name: item.name, image: curimage, number: item.phoneNumbers[0].number, object: item})
+            }
         }} >
             <View style={{paddingHorizontal: 3}}>
                 <ListItem containerStyle={{backgroundColor:'gray'}}>
@@ -90,7 +94,11 @@ class ChooseContacts extends Component {
             if (item.image !== undefined){
                 curimage = item.image
             }
-            this.props.navigation.navigate('WriteNote', {name: item.name, image: curimage, number: item.phoneNumbers[0].number, object: item})
+            if (Platform.OS === 'android') {
+                this.props.navigation.navigate('WriteNoteAndroid', {name: item.name, image: curimage, number: item.phoneNumbers[0].number, object: item})
+            } else {
+                this.props.navigation.navigate('WriteNoteIOS', {name: item.name, image: curimage, number: item.phoneNumbers[0].number, object: item})
+            }
         }} >
             <View style={{paddingHorizontal: 3}}>
                 <ListItem containerStyle={styles.listItem}>
@@ -121,12 +129,20 @@ class ChooseContacts extends Component {
                     <View style = {styles.modalcontainer}>
                         <Image source={icon} style={styles.logo}/>
                         <HeaderText style = {{padding: 20, textAlign: 'center'}}>Recommendation {"\n"}Sent!</HeaderText>
-                        <TouchableHighlight style={styles.button} onPress = {()=>{
-                            this.setState({show:false})
-                            this.setState({contact: this.decorate(this.state.contacts, this.props.route.params.originalobj)})
+                        <View style={styles.buttonContainer}>
+                            <TouchableHighlight style={styles.button} onPress = {()=>{
+                                this.setState({show:false})
+                                this.setState({contact: this.decorate(this.state.contacts, this.props.route.params.originalobj)})
+                                }}>
+                                <Text style={styles.buttonText}>Recommend More</Text>
+                            </TouchableHighlight>
+                            <TouchableHighlight style={styles.button} onPress = {()=>{
+                                this.props.navigation.navigate('Home');
+                                this.setState({show:false})
                             }}>
-                            <Text style={styles.buttonText}>Back</Text>
-                        </TouchableHighlight>
+                                <Text style={styles.buttonText}>Done</Text>
+                            </TouchableHighlight>
+                        </View>
                     </View>
                     </View>
                     
@@ -170,7 +186,6 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingBottom: 40,
         borderRadius:10,
-        // margin: 25, 
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
@@ -178,7 +193,7 @@ const styles = StyleSheet.create({
     },
     button:{
         padding: 10,
-        width: 120,
+        paddingHorizontal: 15,
         height: 50,
         borderRadius: 10,
         alignItems: 'center',

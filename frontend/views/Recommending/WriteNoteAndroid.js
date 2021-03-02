@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import {View, Text, StyleSheet} from 'react-native'
+import {View, Text, StyleSheet, Platform,} from 'react-native'
 import {Avatar} from 'react-native-elements'
 import HeaderText from '../../components/HeaderText'
 import {TextInput, TouchableOpacity } from 'react-native-gesture-handler'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-class WriteNote extends Component {
+class WriteNoteAndroid extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -15,8 +15,7 @@ class WriteNote extends Component {
 
     render() {
         return (
-            <KeyboardAwareScrollView  style = {{flex:1}} extraHeight={200} enableOnAndroid
-            >
+            <KeyboardAwareScrollView  style = {{flex:1}} extraHeight={200} enableOnAndroid>
                 <View style={styles.container}>
                     {this.props.route.params.image 
                         ? <Avatar rounded size="large" source={{uri: this.props.route.params.image.uri  }}/>
@@ -26,13 +25,13 @@ class WriteNote extends Component {
                 <Text style={styles.inputText}>{this.props.route.params.number}</Text>
                 <View style={styles.alert}>
                     <TextInput 
-                        style = {styles.inputText}
+                        style = {styles.textInput}
                         multiline = {true}
                         scrollEnabled = {true}
                         numberOfLines = {4}
                         placeholder = {"Add note"}
                         placeholderTextColor={'#9a9a9a'}
-                        maxLength = {200}
+                        maxLength = {300}
                         autoCorrect = {false}
                         value = {this.state.note}
                         onChangeText = {(note) => this.setState({note})}
@@ -80,6 +79,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '500',
     },
+    textInput: {
+        fontSize: 16,
+        width: '100%',
+        height: '100%'
+    },
     button: {
         backgroundColor: '#007aff',
         width: 250,
@@ -96,4 +100,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default WriteNote;
+export default WriteNoteAndroid;

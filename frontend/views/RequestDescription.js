@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         margin: 25, 
+        paddingVertical: 10,
         alignItems: 'center',
         backgroundColor: 'white'
     },
@@ -92,8 +93,7 @@ const styles = StyleSheet.create({
     },
     alertText: {
         fontSize: 16,
-        fontWeight: '400',
-        color: '#333333',
+        fontWeight: '400'
     },
     textInputContainer: {
         width: '100%',

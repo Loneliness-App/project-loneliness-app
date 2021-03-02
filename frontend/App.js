@@ -16,7 +16,8 @@ import Recommendation from './views/Recommending/Recommendation'
 import Reject from './views/Recommending/Reject'
 import RecommendationSent from './views/Recommending/RecommendationSent'
 import ChooseContacts from './views/Recommending/ChooseContacts'
-import WriteNote from './views/Recommending/WriteNote'
+import WriteNoteAndroid from './views/Recommending/WriteNoteAndroid'
+import WriteNoteIOS from './views/Recommending/WriteNoteIOS'
 
 const Stack = createStackNavigator();
 
@@ -104,12 +105,26 @@ export default function App() {
             title: "Choose Contacts",
             headerStyle: {
               height: 100
+            },
+            headerRight: () => (
+              <HomeHeaderIcon/>
+            ),
+            headerRightContainerStyle: {marginRight: 15, marginTop: 2}
+          }}
+        /> 
+        <Stack.Screen
+          name="WriteNoteAndroid"
+          component={WriteNoteAndroid}
+          options={{
+            title: "",
+            headerStyle: {
+              height: 100
             }
           }}
         /> 
         <Stack.Screen
-          name="WriteNote"
-          component={WriteNote}
+          name="WriteNoteIOS"
+          component={WriteNoteIOS}
           options={{
             title: "",
             headerStyle: {
