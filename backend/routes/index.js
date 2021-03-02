@@ -55,7 +55,6 @@ router.get('/user/:userid/replies', function (req, res) {
 Body shuold be 
 {
     requestId : uuid
-    suggestions : []
 }
 */
 router.post('/user/:userid/reply/', async (req, res) => {
@@ -98,9 +97,12 @@ router.post('/user/:userid/reply/', async (req, res) => {
 })
 
 /*
-Body:
+Example Body:
 {
-    suggestions: []
+    "suggestions" : [
+        {"id" : 1, "name": "clark", "phone":"1234567890", "message": "hello"},
+        {"id" : 2, "name": "clark2", "phone":"2234567890", "message": "hello2"}
+    ]
 }
 */
 router.put('/user/:userid/reply/:replyid', async (req, res) => {
