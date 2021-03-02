@@ -120,7 +120,7 @@ class ChooseContacts extends Component {
                     <View style = {{backgroundColor:'#000000aa', flex: 1, opacity:0.8}}>
                     <View style = {styles.modalcontainer}>
                         <Image source={icon} style={styles.logo}/>
-                        <HeaderText style = {{padding: 20}}>Recommendation Sent!</HeaderText>
+                        <HeaderText style = {{padding: 20, textAlign: 'center'}}>Recommendation {"\n"}Sent!</HeaderText>
                         <TouchableHighlight style={styles.button} onPress = {()=>{
                             this.setState({show:false})
                             this.setState({contact: this.decorate(this.state.contacts, this.props.route.params.originalobj)})
@@ -168,11 +168,13 @@ const styles = StyleSheet.create({
     },
     modalcontainer:{
         flex: 1,
-        padding: 40,
+        paddingBottom: 40,
         borderRadius:10,
-        margin: 25, 
+        // margin: 25, 
+        width: '100%',
         alignItems: 'center',
-        backgroundColor: 'white'
+        justifyContent: 'center',
+        backgroundColor: 'white',
     },
     button:{
         padding: 10,
@@ -182,7 +184,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 20,
-        backgroundColor: 'blue'
+        backgroundColor: '#007aff'
     },
     buttonText: {
         color: 'white',

@@ -37,11 +37,10 @@ const styles = StyleSheet.create({
     },
     alert: {
         marginTop: 30,
-        paddingVertical: 20,
-        paddingHorizontal: 10,
+        paddingVertical: 30,
+        paddingHorizontal: 20,
         backgroundColor: '#E1E1E1',
-        width: '90%',
-        height: '45%',
+        width: '100%',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center'

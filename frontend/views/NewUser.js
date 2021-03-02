@@ -52,11 +52,13 @@ class NewUser extends Component {
                         />
                         <Button title="Switch Flows" onPress={() => {this.props.navigation.navigate('Recommendation');}}/>
                     </KeyboardAvoidingView>
-                    <InputAccessoryView nativeID={inputAccessoryViewID}>
+                    { Platform.OS === 'ios' &&
+                        <InputAccessoryView nativeID={inputAccessoryViewID}>
                             <View style={styles.accessory}>
                                 <Button onPress={Keyboard.dismiss} title="Done"/>
                             </View>
-                    </InputAccessoryView>
+                        </InputAccessoryView>
+                    }
                 </View>
             </TouchableWithoutFeedback>
         );

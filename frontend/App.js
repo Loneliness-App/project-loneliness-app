@@ -101,7 +101,7 @@ export default function App() {
           name="ChooseContacts"
           component={ChooseContacts}
           options={{
-            title: "Choose Contact",
+            title: "Choose Contacts",
             headerStyle: {
               height: 100
             }
@@ -111,7 +111,7 @@ export default function App() {
           name="WriteNote"
           component={WriteNote}
           options={{
-            title: "Write Recommendation",
+            title: "",
             headerStyle: {
               height: 100
             }
@@ -125,7 +125,17 @@ export default function App() {
         <Stack.Screen
           name="Reject"
           component={Reject}
-          options={{headerShown: false}}
+          options={{
+            title: "",
+            headerStyle: {
+              height: 100
+            },
+            headerRight: () => (
+              <HomeHeaderIcon/>
+            ),
+            headerLeft: null,
+            headerRightContainerStyle: {marginRight: 15, marginTop: 2}
+          }}
         /> 
       </Stack.Navigator>
     </NavigationContainer>

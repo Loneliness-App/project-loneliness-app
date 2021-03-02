@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import {KeyboardAvoidingView, View, Text, StyleSheet, Platform} from 'react-native'
+import {View, Text, StyleSheet} from 'react-native'
 import {Avatar} from 'react-native-elements'
 import HeaderText from '../../components/HeaderText'
-import { ScrollView, TextInput, TouchableOpacity } from 'react-native-gesture-handler'
+import {TextInput, TouchableOpacity } from 'react-native-gesture-handler'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 class WriteNote extends Component {
@@ -27,8 +27,8 @@ class WriteNote extends Component {
                 <View style={styles.alert}>
                     <TextInput 
                         style = {styles.inputText}
-                        multiline
-                        scrollEnabled
+                        multiline = {true}
+                        scrollEnabled = {true}
                         numberOfLines = {4}
                         placeholder = {"Add note"}
                         placeholderTextColor={'#9a9a9a'}
@@ -51,7 +51,6 @@ class WriteNote extends Component {
                     <Text style={styles.buttonText}>Send Recommendation</Text>
                 </TouchableOpacity>
                 </View>
-                
                 </View>
             </KeyboardAwareScrollView>
         );
@@ -72,16 +71,14 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 15,
         backgroundColor: '#E1E1E1',
-        width: '95%',
+        width: '100%',
         height: '70%',
         borderRadius: 10,
         justifyContent: 'flex-start',
-        alignItems: 'center'
     },
     inputText: {
         fontSize: 18,
         fontWeight: '500',
-        textAlign: 'center'
     },
     button: {
         backgroundColor: '#007aff',

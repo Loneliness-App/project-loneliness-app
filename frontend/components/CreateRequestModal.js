@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, Text, TextInput, TouchableWithoutFeedback, TouchableOpacity, Keyboard, Dimensions, InputAccessoryView, Button, StyleSheet} from 'react-native'
+import {View, Text, TextInput, TouchableWithoutFeedback, TouchableOpacity, Keyboard, Dimensions, InputAccessoryView, Button, StyleSheet, Platform} from 'react-native'
 import {AntDesign} from '@expo/vector-icons'
 
 class CreateRequestModal extends Component {
@@ -63,11 +63,13 @@ class CreateRequestModal extends Component {
                             <Text style={styles.createButtonText}>Create</Text>
                         </TouchableOpacity>
                      </View>
-                    <InputAccessoryView nativeID={accessoryViewID}>
-                        <View style={styles.accessory}>
-                            <Button onPress={Keyboard.dismiss} title="Done"/>
-                        </View>
-                    </InputAccessoryView>
+                    { Platform.OS === 'ios' &&
+                        <InputAccessoryView nativeID={accessoryViewID}>
+                            <View style={styles.accessory}>
+                                <Button onPress={Keyboard.dismiss} title="Done"/>
+                            </View>
+                        </InputAccessoryView>
+                    }
                 </View>
             </TouchableWithoutFeedback>
         );
