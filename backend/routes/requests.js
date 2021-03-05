@@ -1,14 +1,17 @@
 "use strict";
 const { StatusCodes } = require('http-status-codes');
-const { body, validationResult } = require('express-validator');
+const { body, query, param, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 const express = require('express');
 const router = express.Router();
+const { User, Request, Reply, Suggestion } = require('../models');
 
-const { User, Request, Reply, Suggestion } = require('../database');
-
+/**
+ * Get list of requests associated with a user
+ * Query parameters: userId
+ */
 router.get('/',
-    // Temporary - will base user off of authentication eventually
+    // Temporary - will base user off of session eventually
     query('userId').isUUID(),
     async (req, res) => {
         const errors = validationResult(req);
@@ -33,6 +36,9 @@ router.get('/',
     }
 );
 
+/**
+ * Get information about request and list of replies
+ */
 router.get('/:requestId',
     param('requestId').isUUID(),
     async (req, res) => {
@@ -43,7 +49,7 @@ router.get('/:requestId',
 
         let request;
         try {
-            r = Request.findOne({
+            request = await Request.findOne({
                 where: { id: req.params.requestId },
                 include: [
                     { model: User, attributes: ["id"] },
@@ -84,6 +90,11 @@ router.get('/:requestId',
     }
 );
 
+/**
+ * Create new request
+ * Body: name, message strings required
+ *       userId required (temporarily)
+ */
 router.post('/',
     body('name').isString(),
     body('message').isString(),
@@ -113,13 +124,17 @@ router.post('/',
             return res.sendStatus(StatusCodes.BAD_GATEWAY);
         }
         return res.status(StatusCodes.CREATED).json({
-            id: request.getId(),
-            name: request.getName(),
-            message: request.getMessage(),
+            id: request.id,
+            name: request.name,
+            message: request.message,
         });
     }
 );
 
+/**
+ * Modify name and/or message of request
+ * Body: name, message
+ */
 router.put('/:reqId',
     body('name').isString().optional(),
     body('message').isString().optional(),
@@ -137,23 +152,27 @@ router.put('/:reqId',
             //     return res.sendStatus(StatusCodes.FORBIDDEN);
             // }
             if (req.body.hasOwnProperty("name")) {
-                await request.setName(req.body.name);
+                request.name = req.body.name;
             }
             if (req.body.hasOwnProperty("message")) {
-                await request.setMessage(req.body.message);
+                request.message = req.body.message;
             }
+            await request.save();
         } catch (error) {
             console.log(error);
             return res.sendStatus(StatusCodes.BAD_GATEWAY);
         }
         return res.status(StatusCodes.OK).json({
-            id: request.getId(),
-            name: request.getName(),
-            message: request.getMessage(),
+            id: request.id,
+            name: request.name,
+            message: request.message,
         });
     }
 );
 
+/**
+ * Delete specified request
+ */
 router.delete('/:reqId',
     async (req, res) => {
         let request;
