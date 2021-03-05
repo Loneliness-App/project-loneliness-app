@@ -16,7 +16,7 @@ router.get('/',
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(StatusCodes.NOT_FOUND).json({ errors: errors.array() });
+            return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
         }
 
         let requests;
@@ -44,7 +44,7 @@ router.get('/:requestId',
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(StatusCodes.NOT_FOUND).json({ errors: errors.array() });
+            return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
         }
 
         let request;
@@ -103,7 +103,7 @@ router.post('/',
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(StatusCodes.NOT_FOUND).json({ errors: errors.array() });
+            return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
         }
 
         let request;
@@ -135,18 +135,19 @@ router.post('/',
  * Modify name and/or message of request
  * Body: name, message
  */
-router.put('/:reqId',
+router.put('/:requestId',
+    param('requestId').isUUID(),
     body('name').isString().optional(),
     body('message').isString().optional(),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(StatusCodes.NOT_FOUND).json({ errors: errors.array() });
+            return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
         }
 
         let request;
         try {
-            request = await Request.findOne({ where: { id: req.params.reqId } });
+            request = await Request.findOne({ where: { id: req.params.requestId } });
             // TODO: get user based on authentication
             // if (req.body.userId != request.getUser().getId()) {
             //     return res.sendStatus(StatusCodes.FORBIDDEN);
@@ -173,11 +174,17 @@ router.put('/:reqId',
 /**
  * Delete specified request
  */
-router.delete('/:reqId',
+router.delete('/:requestId',
+    param('requestId').isUUID(),
     async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+        }
+
         let request;
         try {
-            request = await Request.findOne({ where: { id: req.params.reqId } });
+            request = await Request.findOne({ where: { id: req.params.requestId } });
             // TODO: check user based on authentication
             await request.destroy();
         } catch (error) {
