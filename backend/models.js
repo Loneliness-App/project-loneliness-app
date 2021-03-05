@@ -25,7 +25,6 @@ const Request = sequelize.define('Request', {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
     },
     name: {
         type: DataTypes.STRING,
@@ -41,7 +40,6 @@ const Reply = sequelize.define('Reply', {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
     },
 });
 

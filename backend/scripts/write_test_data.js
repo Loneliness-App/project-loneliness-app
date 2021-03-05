@@ -1,4 +1,5 @@
-const { sequelize, User, Request, Reply, Suggestion } = require('./database');
+const { sequelize, User, Request, Reply, Suggestion } = require('../database');
+const { v4: uuidv4 } = require('uuid');
 
 async function testData() {
     try {
@@ -7,17 +8,17 @@ async function testData() {
         await sequelize.sync({ force: true });
         console.log("synced!");
 
-        let user1 = await User.create({ name: "u1", key: "key" });
-        let user2 = await User.create({ name: "u2", key: "key" });
-        let user3 = await User.create({ name: "u3", key: "key" });
-        let request1 = await Request.create({ name: "r1", message: "msg", key: "key" });
-        let request2 = await Request.create({ name: "r2", message: "msg", key: "key" });
+        let user1 = await User.create({ id: uuidv4(), name: "u1", key: "key" });
+        let user2 = await User.create({ id: uuidv4(), name: "u2", key: "key" });
+        let user3 = await User.create({ id: uuidv4(), name: "u3", key: "key" });
+        let request1 = await Request.create({ id: uuidv4(), name: "r1", message: "msg", key: "key" });
+        let request2 = await Request.create({ id: uuidv4(), name: "r2", message: "msg", key: "key" });
         await user1.addRequest(request1);
         await user1.addRequest(request2);
 
-        let reply1 = await Reply.create({});
-        let reply2 = await Reply.create({});
-        let reply3 = await Reply.create({});
+        let reply1 = await Reply.create({id: uuidv4(),});
+        let reply2 = await Reply.create({id: uuidv4(),});
+        let reply3 = await Reply.create({id: uuidv4(),});
         await user2.addReply(reply1);
         await request1.addReply(reply1);
         await user3.addReply(reply2);
