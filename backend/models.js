@@ -1,10 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const { DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD } = require('./config');
 
-DB_NAME = process.env.DB_NAME;
-DB_UNAME = process.env.DB_UNAME;
-
-const sequelize = new Sequelize(DB_NAME, DB_UNAME, '', {
-    host: 'localhost',
+const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
+    host: DB_HOST,
     dialect: 'postgres',
 });
 
@@ -16,6 +14,10 @@ const User = sequelize.define('User', {
     },
     name: {
         type: DataTypes.STRING,
+        allowNull: false,
+    },
+    password: {
+        type: DataTypes.STRING(60),
         allowNull: false,
     }
 });

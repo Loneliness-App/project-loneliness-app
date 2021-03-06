@@ -1,8 +1,7 @@
-var createError = require('http-errors');
+const { StatusCodes } = require('http-status-codes');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
 
 var apiRouter = require('./routes/api');
 
@@ -15,20 +14,17 @@ app.use(cookieParser());
 
 app.use('/', apiRouter);
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-    next(createError(404));
-});
-
 // error handler
 app.use(function (err, req, res, next) {
+    if (err.name === 'UnauthorizedError') {
+        res.status(StatusCodes.UNAUTHORIZED).send('Invalid token');
+    }
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
     // render the error page
-    res.status(err.status || 500);
-    res.render('error');
+    res.sendStatus(err.status || 500);
 });
 
 module.exports = app;
