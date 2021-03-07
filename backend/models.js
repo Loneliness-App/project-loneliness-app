@@ -1,8 +1,12 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD } = require('./config');
 
-const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
-    host: DB_HOST,
+// const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
+//     host: DB_HOST,
+//     dialect: 'postgres',
+// });
+const sequelize = new Sequelize('lonliness', 'clark2', 'password', {
+    host: 'localhost',
     dialect: 'postgres',
 });
 
@@ -73,5 +77,6 @@ Request.hasMany(Reply);
 Reply.belongsTo(Request);
 
 Reply.hasMany(Suggestion);
+Suggestion.belongsTo(Reply);
 
 module.exports = { sequelize, Sequelize, User, Request, Reply, Suggestion }
