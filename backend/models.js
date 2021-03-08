@@ -1,66 +1,66 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const { DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD } = require("./config");
+const { Sequelize, DataTypes } = require('sequelize');
+const { DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD } = require('./config');
 
 const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
-  host: DB_HOST,
-  dialect: "postgres",
+    host: DB_HOST,
+    dialect: 'postgres',
 });
 
-const User = sequelize.define("User", {
-  id: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    primaryKey: true,
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  password: {
-    type: DataTypes.STRING(60),
-    allowNull: false,
-  },
+const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        primaryKey: true,
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    password: {
+        type: DataTypes.STRING(60),
+        allowNull: false,
+    },
 });
 
-const Request = sequelize.define("Request", {
-  id: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    primaryKey: true,
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  message: {
-    type: DataTypes.STRING,
-  },
+const Request = sequelize.define('Request', {
+    id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        primaryKey: true,
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    message: {
+        type: DataTypes.STRING,
+    },
 });
 
-const Reply = sequelize.define("Reply", {
-  id: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    primaryKey: true,
-  },
+const Reply = sequelize.define('Reply', {
+    id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        primaryKey: true,
+    },
 });
 
-const Suggestion = sequelize.define("Suggestion", {
-  id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  name: {
-    type: DataTypes.STRING,
-  },
-  phone: {
-    type: DataTypes.STRING(10),
-  },
-  message: {
-    type: DataTypes.STRING,
-  },
+const Suggestion = sequelize.define('Suggestion', {
+    id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+    name: {
+        type: DataTypes.STRING,
+    },
+    phone: {
+        type: DataTypes.STRING(10),
+    },
+    message: {
+        type: DataTypes.STRING,
+    },
 });
 
 User.hasMany(Request);
