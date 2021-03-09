@@ -14,7 +14,7 @@ router.use(expressJwt({ secret: JWT_SECRET, algorithms: ['HS256'] }));
  * get all replies that user has responded to.
  * Body should include userId.
  */
-router.get('/', body('userId').isUUID(), async (req, res) => {
+router.get('/', async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res
@@ -43,53 +43,46 @@ Body should be
     userId: uuid
 }
 */
-router.post(
-    '/',
-    body('userId').isUUID(),
-    body('requestId').isUUID(),
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res
-                .status(StatusCodes.NOT_FOUND)
-                .json({ errors: errors.array() });
-        }
-        let reply;
-        let replyId = uuidv4();
-        //check if the user exists, if so create reply and add to user.
+router.post('/', body('requestId').isUUID(), async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res
+            .status(StatusCodes.NOT_FOUND)
+            .json({ errors: errors.array() });
+    }
+    let reply;
+    let replyId = uuidv4();
+    //check if the user exists, if so create reply and add to user.
 
-        try {
-            reply = await Reply.create({
-                id: replyId,
-            });
-
-            let user = await User.findOne({ where: { id: req.user.id } });
-            if (user == null) {
-                return res
-                    .status(StatusCodes.NOT_FOUND)
-                    .send('User not found.');
-            }
-
-            let request = await Request.findOne({
-                where: { id: req.body.requestId },
-            });
-            if (request == null) {
-                return res
-                    .status(StatusCodes.NOT_FOUND)
-                    .send('Recommendation request not found');
-            }
-
-            await request.addReply(reply);
-            await user.addReply(reply);
-        } catch (error) {
-            console.log(error);
-            return res.sendStatus(StatusCodes.BAD_GATEWAY);
-        }
-        return res.status(StatusCodes.OK).json({
+    try {
+        reply = await Reply.create({
             id: replyId,
         });
+
+        let user = await User.findOne({ where: { id: req.user.id } });
+        if (user == null) {
+            return res.status(StatusCodes.NOT_FOUND).send('User not found.');
+        }
+
+        let request = await Request.findOne({
+            where: { id: req.body.requestId },
+        });
+        if (request == null) {
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send('Recommendation request not found');
+        }
+
+        await request.addReply(reply);
+        await user.addReply(reply);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(StatusCodes.BAD_GATEWAY);
     }
-);
+    return res.status(StatusCodes.OK).json({
+        id: replyId,
+    });
+});
 
 /*
 Populate reply with user information
@@ -106,7 +99,6 @@ router.put(
     '/',
     body('replyId').isUUID(),
     body('suggestions').isArray(),
-    body('userId'),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
