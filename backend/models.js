@@ -19,7 +19,7 @@ const User = sequelize.define('User', {
     password: {
         type: DataTypes.STRING(60),
         allowNull: false,
-    }
+    },
 });
 
 const Request = sequelize.define('Request', {
@@ -60,7 +60,7 @@ const Suggestion = sequelize.define('Suggestion', {
     },
     message: {
         type: DataTypes.STRING,
-    }
+    },
 });
 
 User.hasMany(Request);
@@ -73,5 +73,6 @@ Request.hasMany(Reply);
 Reply.belongsTo(Request);
 
 Reply.hasMany(Suggestion);
+Suggestion.belongsTo(Reply);
 
-module.exports = { sequelize, Sequelize, User, Request, Reply, Suggestion }
+module.exports = { sequelize, Sequelize, User, Request, Reply, Suggestion };
