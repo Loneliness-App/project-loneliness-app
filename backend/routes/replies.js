@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const expressJwt = require('express-jwt');
 const { JWT_SECRET } = require('../config');
 const { User, Request, Reply, Suggestion } = require('../models');
+const { mode } = require('crypto-js');
 
 var router = express.Router();
 router.use(expressJwt({ secret: JWT_SECRET, algorithms: ['HS256'] }));
@@ -24,14 +25,15 @@ router.get('/', async (req, res) => {
         where: { '$User.id$': req.user.id },
         include: [
             { model: User, attributes: [] },
-            { model: Request, attributes: ['id', 'name'] },
+            // { model: Request, attributes: ['id', 'name'] },
         ],
-        attributes: [],
-    }).then((replies) =>
+        attributes: ['id'],
+    }).then((replies) => {
+        console.log(replies);
         res.json({
-            replies: replies.map((r) => r.get()),
-        })
-    );
+            replies: replies.map((r) => r.get('id')),
+        });
+    });
 });
 
 /*
@@ -92,50 +94,86 @@ Example Body:
     ]
 }
 */
-router.put(
-    '/',
-    body('replyId').isUUID(),
-    body('suggestions').isArray(),
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
+router.put('/:replyid', body('suggestions').isArray(), async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res
+            .status(StatusCodes.NOT_FOUND)
+            .json({ errors: errors.array() });
+    }
+
+    let reply;
+    try {
+        reply = await Reply.findOne({
+            where: { id: req.params.replyid, '$User.id$': req.user.id },
+            include: [{ model: User, attributes: [] }],
+        });
+        if (reply == null) {
             return res
                 .status(StatusCodes.NOT_FOUND)
-                .json({ errors: errors.array() });
+                .send('Reply not found or user does not match.');
         }
+        //check that user is the one on the reply!!!!
 
-        let reply;
+        //for each suggestion: create, and add to reply,
         try {
-            reply = await Reply.findOne({
-                where: { id: req.body.replyId, '$User.id$': req.user.id },
-                include: [{ model: User, attributes: [] }],
-            });
-            if (reply == null) {
-                return res
-                    .status(StatusCodes.NOT_FOUND)
-                    .send('Reply not found or user does not match.');
+            for (let s of req.body.suggestions) {
+                suggestion = await Suggestion.create(s);
+                reply.addSuggestion(suggestion);
             }
-            //check that user is the one on the reply!!!!
-
-            //for each suggestion: create, and add to reply,
-            try {
-                for (let s of req.body.suggestions) {
-                    suggestion = await Suggestion.create(s);
-                    reply.addSuggestion(suggestion);
-                }
-            } catch (e) {
-                console.log('Devlog', e);
-                return res
-                    .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                    .send('duplicate key issue');
-            }
-        } catch (error) {
-            return res.sendStatus(StatusCodes.BAD_GATEWAY);
+        } catch (e) {
+            console.log('Devlog', e);
+            return res
+                .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                .send('duplicate key issue');
         }
-        return res.status(StatusCodes.OK).json({
-            replyId: req.body.replyId,
-        });
+    } catch (error) {
+        return res.sendStatus(StatusCodes.BAD_GATEWAY);
     }
-);
+    return res.status(StatusCodes.OK).json({
+        replyId: req.body.replyId,
+    });
+});
+
+/**
+ * get all suggestions for a reply
+ */
+router.get('/:replyid', async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res
+            .status(StatusCodes.NOT_FOUND)
+            .json({ errors: errors.array() });
+    }
+
+    let reqResource;
+    //query suggestions by replyid
+    try {
+        reqResource = await Reply.findOne({
+            where: { id: req.params.replyid },
+            include: [
+                { model: User, attributes: ['id'] },
+                { model: Suggestion, attributes: ['name', 'phone', 'message'] },
+            ],
+            attributes: ['id'],
+        });
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(StatusCodes.BAD_GATEWAY);
+    }
+    if (reqResource == null) {
+        return res.sendStatus(StatusCodes.NOT_FOUND);
+    }
+    if (reqResource.User.id != req.user.id) {
+        // Authenticated user does not own the request resource
+        return res.sendStatus(StatusCodes.FORBIDDEN);
+    }
+    return res.json({
+        replyid: reqResource.id,
+        suggestions: reqResource.Suggestions.map((suggestion) =>
+            suggestion.get()
+        ),
+    });
+});
 
 module.exports = router;
