@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {View, StyleSheet, Text, FlatList, Linking, TouchableOpacity} from 'react-native'
-import {ListItem, Avatar, ButtonGroup} from 'react-native-elements'
+import {ListItem, Avatar, ButtonGroup, Badge} from 'react-native-elements'
 import { Ionicons, Feather, AntDesign, Entypo, FontAwesome} from '@expo/vector-icons'
 import {Collapse, CollapseHeader, CollapseBody} from 'accordion-collapse-react-native'
 import {Swipeable} from 'react-native-gesture-handler'
@@ -15,6 +15,7 @@ class ViewRequest extends Component {
         this.state = {
             data: this.allData,
             openItems: [],
+            newItems: this.allData.filter(item => item.new),
             selectedIndex: 0
         }
         this.updateIndex = this.updateIndex.bind(this)
@@ -34,8 +35,16 @@ class ViewRequest extends Component {
         if (status === 'granted') {
             try {
                 item.contactID = await Contacts.addContactAsync(contact)
+
+                item.contactID = await Contacts.presentFormAsync(item.contactID)
+
                 item.isAdded = true
-                this.forceUpdate()
+                if (this.state.newItems.includes(item)) {
+                    let newItems = this.state.newItems.filter(newItem => !Object.is(item, newItem))
+                    this.setState({newItems: newItems})
+                } else {
+                    this.forceUpdate()
+                }
             } catch (e) {
                 console.log(e)
             }
@@ -92,13 +101,18 @@ class ViewRequest extends Component {
         )
     }
 
-    setOpenItems(index) {
+    setOpenItems(item) {
+        let index = item.id
         if (this.state.openItems.includes(index)) {
             let newOpenItems = this.state.openItems.filter(item => item !== index)
             this.setState({openItems: newOpenItems})
         } else {
             this.state.openItems.push(index)
             this.setState({openItems: this.state.openItems})
+        }
+        if (this.state.newItems.includes(item)) {
+            let newItems = this.state.newItems.filter(newItem => !Object.is(item, newItem))
+            this.setState({newItems: newItems})
         }
     }
 
@@ -107,7 +121,7 @@ class ViewRequest extends Component {
             renderRightActions={() => this.rightAction(item)}
             renderLeftActions={() => this.leftAction(item)}
         >
-            <Collapse style={styles.listItemContainer} onToggle = {() => this.setOpenItems(item.id)}>
+            <Collapse style={styles.listItemContainer} onToggle = {() => this.setOpenItems(item)}>
                 <CollapseHeader style={{paddingHorizontal: 3}}>
                     <ListItem containerStyle={styles.listItem}>
                         {this.state.openItems.includes(item.id) && item.note.length > 0
@@ -115,8 +129,18 @@ class ViewRequest extends Component {
                             : <ListItem.Chevron size={22} color="#007aff"/>
                         }
                         {item.image  
-                            ? <Avatar rounded size="medium" source={{uri: item.image }}/>
-                            : <Avatar rounded overlayContainerStyle={{backgroundColor: '#c8c8c8'}} size="medium" title={item.title} titleStyle={{color: 'white'}}/>
+                            ? <View>
+                                <Avatar rounded size="medium" source={{uri: item.image }}/>
+                                {this.state.newItems.includes(item) &&
+                                    <Badge status="primary" badgeStyle={styles.badge} containerStyle={{position: 'absolute', top: 2, right: 3}}/>
+                                }                                   
+                              </View>
+                            : <View>
+                                <Avatar rounded overlayContainerStyle={{backgroundColor: '#c8c8c8'}} size="medium" title={item.title} titleStyle={{color: 'white'}}/>
+                                {this.state.newItems.includes(item) &&
+                                    <Badge status="primary" badgeStyle={styles.badge} containerStyle={{position: 'absolute', top: 2, right: 3}}/>
+                                }
+                              </View>
                         }
                         <ListItem.Content>
                             <ListItem.Title style={styles.listTitle}>{`${item.firstName} ${item.lastName}`}</ListItem.Title>
@@ -242,6 +266,10 @@ const styles = StyleSheet.create({
         marginTop: 15,
         width: '100%',
         height: 32
+    },
+    badge: {
+        height: 9,
+        width: 9
     }
 })
 

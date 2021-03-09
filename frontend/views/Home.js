@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {View, Text, StyleSheet, FlatList, TouchableOpacity, Modal} from 'react-native'
-import {SearchBar, ListItem} from 'react-native-elements'
+import {SearchBar, ListItem, Badge} from 'react-native-elements'
 import {AntDesign, FontAwesome} from '@expo/vector-icons'
 import CreateRequestModal from '../components/CreateRequestModal'
 
@@ -31,8 +31,8 @@ class Home extends Component {
                 <ListItem.Title style={styles.listTitle}>{item.title}</ListItem.Title>
                 <ListItem.Subtitle style={styles.listSubtitle}>{item.subtitle}</ListItem.Subtitle>
             </ListItem.Content>
-            {item.new &&
-                <FontAwesome name="circle" size={10} color="#007aff"/>
+            {item.new > 0 &&
+                <Badge value={item.new} badgeStyle={styles.badge}/>
             }
             <ListItem.Chevron size={24} />
         </ListItem>
@@ -129,7 +129,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10
     },
     listItem: {
-        borderRadius: 10
+        borderRadius: 10,
+        alignItems: 'center'
     },
     listTitle: {
         fontSize: 16,
@@ -147,6 +148,11 @@ const styles = StyleSheet.create({
     },
     modal: {
         backgroundColor: 'red'
+    },
+    badge: {
+        backgroundColor: '#007aff',
+        width: 20,
+        height: 20
     }
 })
 
@@ -155,26 +161,26 @@ const requestsData = [
     {
       "id": 1,
       "title": "Reading Buddies",
-      "subtitle": "5 new recommendations",
-      "new": true
+      "subtitle": "5 recommendations",
+      "new": 2
     },
     {
       "id": 2,
       "title": "Boba",
-      "subtitle": "2 new recommendations",
-      "new": true
+      "subtitle": "2 recommendations",
+      "new": 3
     },
     {
       "id": 3,
       "title": "Netflix Party Group",
       "subtitle": "8 recommendations",
-      "new": false
+      "new": 0
     },
     {
         "id": 4,
         "title": "Pickup Basketball",
         "subtitle": "1 recommendation",
-        "new": false
+        "new": 0
     }
 ];
 
