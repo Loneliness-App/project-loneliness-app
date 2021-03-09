@@ -39,7 +39,6 @@ Create an empty reply when a user accepts a request.
 Body should be 
 {
     requestId : uuid
-    userId: uuid
 }
 */
 router.post('/', body('requestId').isUUID(), async (req, res) => {
@@ -88,7 +87,6 @@ Populate reply with user information
 Example Body:
 {
     "replyId" : UUID,
-    "userId" : UUID,
     "suggestions" : [
         {"name": "clark", "phone":"1234567890", "message": "hello"},
     ]
