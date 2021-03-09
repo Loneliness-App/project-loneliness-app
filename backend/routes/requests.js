@@ -6,7 +6,6 @@ const expressJwt = require('express-jwt');
 const express = require('express');
 const { User, Request, Reply, Suggestion } = require('../models');
 const { JWT_SECRET } = require('../config');
-//const JWT_SECRET = "JWT_SECRET";
 
 const router = express.Router();
 router.use(expressJwt({ secret: JWT_SECRET, algorithms: ['HS256'] }));

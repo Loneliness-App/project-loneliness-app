@@ -4,7 +4,6 @@ const { StatusCodes } = require('http-status-codes');
 const { v4: uuidv4 } = require('uuid');
 const expressJwt = require('express-jwt');
 const { JWT_SECRET } = require('../config');
-//const JWT_SECRET = "JWT_SECRET";
 const { User, Request, Reply, Suggestion } = require('../models');
 
 var router = express.Router();

@@ -12,7 +12,6 @@ const router = express.Router();
 
 const { User } = require('../models');
 const { JWT_SECRET } = require('../config');
-//const JWT_SECRET = 'JWT_SECRET'
 
 const SALT_ROUNDS = 10;
 
