@@ -22,7 +22,7 @@ router.get('/', body('userId').isUUID(), async (req, res) => {
             .json({ errors: errors.array() });
     }
     Reply.findAll({
-        where: { '$User.id$': req.body.userId },
+        where: { '$User.id$': req.user.id },
         include: [
             { model: User, attributes: [] },
             { model: Request, attributes: ['id', 'name'] },
@@ -63,7 +63,7 @@ router.post(
                 id: replyId,
             });
 
-            let user = await User.findOne({ where: { id: req.body.userId } });
+            let user = await User.findOne({ where: { id: req.user.id } });
             if (user == null) {
                 return res
                     .status(StatusCodes.NOT_FOUND)
@@ -118,7 +118,7 @@ router.put(
         let reply;
         try {
             reply = await Reply.findOne({
-                where: { id: req.body.replyId, '$User.id$': req.body.userId },
+                where: { id: req.body.replyId, '$User.id$': req.user.id },
                 include: [{ model: User, attributes: [] }],
             });
             if (reply == null) {
