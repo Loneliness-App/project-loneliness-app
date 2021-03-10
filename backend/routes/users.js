@@ -22,6 +22,7 @@ const SALT_ROUNDS = 10;
 router.post('/register', body('name').isString(), async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        console.log('DEVLOG', errors);
         return res
             .status(StatusCodes.BAD_REQUEST)
             .json({ errors: errors.array() });

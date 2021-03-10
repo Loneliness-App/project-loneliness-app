@@ -124,7 +124,7 @@ router.put('/:replyid', body('suggestions').isArray(), async (req, res) => {
         } catch (e) {
             console.log('Devlog', e);
             return res
-                .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                .status(StatusCodes.BAD_GATEWAY)
                 .send('duplicate key issue');
         }
     } catch (error) {
@@ -146,14 +146,19 @@ router.get('/:replyid', async (req, res) => {
             .json({ errors: errors.array() });
     }
 
-    let reqResource;
+    let reply;
     //query suggestions by replyid
     try {
-        reqResource = await Reply.findOne({
+        reply = await Reply.findOne({
             where: { id: req.params.replyid },
             include: [
                 { model: User, attributes: ['id'] },
                 { model: Suggestion, attributes: ['name', 'phone', 'message'] },
+                {
+                    model: Request,
+                    include: [{ model: User, attributes: ['name'] }],
+                    attributes: ['name', 'message'],
+                },
             ],
             attributes: ['id'],
         });
@@ -161,18 +166,19 @@ router.get('/:replyid', async (req, res) => {
         console.log(error);
         return res.sendStatus(StatusCodes.BAD_GATEWAY);
     }
-    if (reqResource == null) {
+    if (reply == null) {
         return res.sendStatus(StatusCodes.NOT_FOUND);
     }
-    if (reqResource.User.id != req.user.id) {
+    if (reply.User.id != req.user.id) {
         // Authenticated user does not own the request resource
         return res.sendStatus(StatusCodes.FORBIDDEN);
     }
     return res.json({
-        replyid: reqResource.id,
-        suggestions: reqResource.Suggestions.map((suggestion) =>
-            suggestion.get()
-        ),
+        replyid: reply.id,
+        requestName: reply.Request.name,
+        requestOwner: reply.Request.User.name,
+        requestMessage: reply.Request.message,
+        suggestions: reply.Suggestions.map((suggestion) => suggestion.get()),
     });
 });
 
