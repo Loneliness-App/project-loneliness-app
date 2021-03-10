@@ -25,13 +25,20 @@ router.get('/', async (req, res) => {
         where: { '$User.id$': req.user.id },
         include: [
             { model: User, attributes: [] },
-            // { model: Request, attributes: ['id', 'name'] },
+            {
+                model: Request,
+                include: [{ model: User, attributes: ['name'] }],
+                attributes: ['id', 'name'],
+            },
         ],
         attributes: ['id'],
     }).then((replies) => {
-        console.log(replies);
         res.json({
-            replies: replies.map((r) => r.get('id')),
+            replies: replies.map((r) => ({
+                id: r.get('id'),
+                requestName: r.get('Request').get('name'),
+                requestOwner: r.get('Request').get('User').get('name'),
+            })),
         });
     });
 });
