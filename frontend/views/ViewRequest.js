@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, StyleSheet, Text, FlatList, Linking, TouchableOpacity} from 'react-native'
+import {View, StyleSheet, Text, FlatList, Linking, TouchableOpacity, Alert} from 'react-native'
 import {ListItem, Avatar, ButtonGroup, Badge} from 'react-native-elements'
 import { Ionicons, Feather, AntDesign, Entypo, FontAwesome} from '@expo/vector-icons'
 import {Collapse, CollapseHeader, CollapseBody} from 'accordion-collapse-react-native'
@@ -21,6 +21,12 @@ class ViewRequest extends Component {
         this.updateIndex = this.updateIndex.bind(this)
     }
 
+    // contactsConfirmation() {
+    //     let approved = false
+        
+    //     return approved
+    // }
+
     openContacts = async (item) => {
         const { status } = await Contacts.getPermissionsAsync();
         const contact = {
@@ -34,16 +40,37 @@ class ViewRequest extends Component {
         }
         if (status === 'granted') {
             try {
-                item.contactID = await Contacts.addContactAsync(contact)
+                const AsyncAlert = () => new Promise((resolve) => {
+                    Alert.alert(
+                        "Add Contact",
+                        "Once you click Confirm, this recommendation will automatically be added to your contacts.",
+                        [
+                            {
+                                text: "Cancel",
+                                style: "cancel",
+                                onPress: () => {resolve('Canceled')}
+                            },
+                            {
+                                text: "Confirm",
+                                onPress: () => {resolve('Confirmed')}
+                            }
+                        ]
+                    )
+                })
+                const userResponse = await AsyncAlert()
 
-                item.contactID = await Contacts.presentFormAsync(item.contactID)
+                if (userResponse === 'Confirmed') {
+                    item.contactID = await Contacts.addContactAsync(contact)
 
-                item.isAdded = true
-                if (this.state.newItems.includes(item)) {
-                    let newItems = this.state.newItems.filter(newItem => !Object.is(item, newItem))
-                    this.setState({newItems: newItems})
-                } else {
-                    this.forceUpdate()
+                    item.contactID = await Contacts.presentFormAsync(item.contactID)
+    
+                    item.isAdded = true
+                    if (this.state.newItems.includes(item)) {
+                        let newItems = this.state.newItems.filter(newItem => !Object.is(item, newItem))
+                        this.setState({newItems: newItems})
+                    } else {
+                        this.forceUpdate()
+                    }
                 }
             } catch (e) {
                 console.log(e)

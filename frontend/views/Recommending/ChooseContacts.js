@@ -68,11 +68,6 @@ class ChooseContacts extends Component {
             if (item.image !== undefined){
                 curimage = item.image
             }
-            if (Platform.OS === 'android') {
-                this.props.navigation.navigate('WriteNoteAndroid', {name: item.name, image: curimage, number: item.phoneNumbers[0].number, object: item})
-            } else {
-                this.props.navigation.navigate('WriteNoteIOS', {name: item.name, image: curimage, number: item.phoneNumbers[0].number, object: item})
-            }
         }} >
             <View style={{paddingHorizontal: 3}}>
                 <ListItem containerStyle={{backgroundColor:'gray'}}>

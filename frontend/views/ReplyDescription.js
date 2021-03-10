@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, StyleSheet, TextInput, Text} from 'react-native'
+import {View, StyleSheet, TextInput, Text, Button, Alert} from 'react-native'
 import BigHeaderText from '../components/BigHeaderText'
 import SubmitButton from '../components/SubmitButton'
 
@@ -10,6 +10,23 @@ class ReplyDescription extends Component {
         this.state = {
            
         }
+    }
+
+    openConfirmationAlert() {
+        Alert.alert(
+            "Archive Reply",
+            "Are you sure you're done recommending for this reply? Once you click Done, this reply will be archived and you won't be able to recommend anymore.",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Done",
+                    onPress: () => this.props.navigation.navigate('Home')
+                }
+            ]
+        )
     }
 
     render() {
@@ -30,7 +47,7 @@ class ReplyDescription extends Component {
                         </View>
                     </View>
                     <SubmitButton title='Recommend' route='ChooseContacts' color={{backgroundColor: '#007aff'}}/>
-                    <SubmitButton title='Close Reply' route='Home' color={{backgroundColor: '#e82020'}}/>
+                    <Button title="I'm Done Recommending" color="#007aff" onPress={() => {this.openConfirmationAlert()}}/>
                 </View>
         );
     }
