@@ -17,7 +17,7 @@ app.use('/', apiRouter);
 // error handler
 app.use(function (err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
-        return res.status(StatusCodes.UNAUTHORIZED).send('Invalid token');
+        return res.status(StatusCodes.UNAUTHORIZED).send('Invalid authentication token');
     }
     // set locals, only providing error in development
     res.locals.message = err.message;

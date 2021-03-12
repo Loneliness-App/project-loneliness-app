@@ -27,7 +27,7 @@ router.post('/register', body('name').isString(), async (req, res) => {
             .json({ errors: errors.array() });
     }
 
-    let password = Base64.stringify(CryptoJS.lib.WordArray.random(16));
+    let password = Base64.stringify(CryptoJS.lib.WordArray.random(18));
     let hashedPassword;
     try {
         hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
@@ -84,12 +84,12 @@ router.post(
         }
 
         if (user == null) {
-            return res.sendStatus(StatusCodes.UNAUTHORIZED);
+            return res.status(StatusCodes.UNAUTHORIZED).send('Invalid id or password');
         }
 
         try {
             if (!(await bcrypt.compare(req.body.password, user.password))) {
-                return res.sendStatus(StatusCodes.UNAUTHORIZED);
+                return res.status(StatusCodes.UNAUTHORIZED).send('Invalid id or password');
             }
         } catch (err) {
             console.log(err);
