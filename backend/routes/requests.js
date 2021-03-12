@@ -2,6 +2,8 @@
 const { StatusCodes } = require('http-status-codes');
 const { body, query, param, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
+const CryptoJS = require('crypto-js');
+const Base64 = require('crypto-js/enc-base64');
 const expressJwt = require('express-jwt');
 const express = require('express');
 const { User, Request, Reply, Suggestion } = require('../models');
@@ -65,7 +67,7 @@ router.get('/:requestId', param('requestId').isUUID(), async (req, res) => {
                     ],
                 },
             ],
-            attributes: ['name', 'message'],
+            attributes: ['name', 'message', 'token'],
         });
     } catch (error) {
         console.log(error);
@@ -81,8 +83,7 @@ router.get('/:requestId', param('requestId').isUUID(), async (req, res) => {
     return res.json({
         name: reqResource.name,
         message: reqResource.message,
-        // TODO: add real link system
-        inviteLink: 'https://google.com',
+        token: reqResource.token,
         replies: reqResource.Replies.map((reply) => ({
             suggestions: reply.Suggestions.map((s) => s.get()),
             from: reply.User.name,
@@ -106,6 +107,7 @@ router.post(
                 .json({ errors: errors.array() });
         }
 
+        let token = Base64.stringify(CryptoJS.lib.WordArray.random(18));
         let reqResource;
         try {
             let user = await User.findOne({ where: { id: req.user.id } });
@@ -118,6 +120,7 @@ router.post(
                 id: uuidv4(),
                 name: req.body.name,
                 message: req.body.message,
+                token: token,
             });
             await user.addRequest(reqResource);
         } catch (error) {
@@ -128,6 +131,7 @@ router.post(
             id: reqResource.id,
             name: reqResource.name,
             message: reqResource.message,
+            token: token,
         });
     }
 );
