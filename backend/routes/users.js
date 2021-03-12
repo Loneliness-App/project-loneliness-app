@@ -84,12 +84,12 @@ router.post(
         }
 
         if (user == null) {
-            return res.sendStatus(StatusCodes.UNAUTHORIZED);
+            return res.status(StatusCodes.UNAUTHORIZED).send('Invalid id or password');
         }
 
         try {
             if (!(await bcrypt.compare(req.body.password, user.password))) {
-                return res.sendStatus(StatusCodes.UNAUTHORIZED);
+                return res.status(StatusCodes.UNAUTHORIZED).send('Invalid id or password');
             }
         } catch (err) {
             console.log(err);
