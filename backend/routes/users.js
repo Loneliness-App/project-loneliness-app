@@ -27,7 +27,7 @@ router.post('/register', body('name').isString(), async (req, res) => {
             .json({ errors: errors.array() });
     }
 
-    let password = Base64.stringify(CryptoJS.lib.WordArray.random(16));
+    let password = Base64.stringify(CryptoJS.lib.WordArray.random(18));
     let hashedPassword;
     try {
         hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
