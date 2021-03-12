@@ -87,7 +87,6 @@ router.post(
             return res.sendStatus(StatusCodes.UNAUTHORIZED);
         }
 
-        console.log(await bcrypt.compare(req.body.password, user.password));
         try {
             if (!(await bcrypt.compare(req.body.password, user.password))) {
                 return res.sendStatus(StatusCodes.UNAUTHORIZED);
@@ -97,7 +96,6 @@ router.post(
             return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
         }
 
-        console.log('devlog');
         // Create token that expires in 24 hours
         let token = jwt.sign({ id: req.body.userId }, JWT_SECRET, {
             expiresIn: 86400,

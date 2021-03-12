@@ -20,7 +20,6 @@ router.get('/', async (req, res) => {
             .status(StatusCodes.BAD_REQUEST)
             .json({ errors: errors.array() });
     }
-    console.log(req.user);
 
     let requests;
     try {
