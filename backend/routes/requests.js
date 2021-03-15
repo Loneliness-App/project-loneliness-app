@@ -141,7 +141,7 @@ router.post(
  * Modify name and/or message of request
  * Body: name, message
  */
-router.put(
+router.patch(
     '/:requestId',
     param('requestId').isUUID(),
     body('name').isString().optional(),
@@ -157,13 +157,13 @@ router.put(
         let reqResource;
         try {
             reqResource = await Request.findOne({
-                where: { id: req.params.requestId },
-                include: { model: User, attributes: ['id'] },
+                where: { id: req.params.requestId, '$User.id$': req.user.id },
+                include: { model: User, attributes: [] },
             });
-
-            if (reqResource.User.id != req.user.id) {
-                // Authenticated user does not own the request resource
-                return res.sendStatus(StatusCodes.FORBIDDEN);
+            if (reqResource == null) {
+                return res
+                    .status(StatusCodes.NOT_FOUND)
+                    .send('Reply not found or user does not match.');
             }
 
             if (req.body.hasOwnProperty('name')) {
