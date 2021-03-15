@@ -118,6 +118,7 @@ router.post(
                 id: uuidv4(),
                 name: req.body.name,
                 message: req.body.message,
+                active: true,
             });
             await user.addRequest(reqResource);
         } catch (error) {

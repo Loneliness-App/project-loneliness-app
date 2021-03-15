@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
             .json({ errors: errors.array() });
     }
     Reply.findAll({
-        where: { '$User.id$': req.user.id },
+        where: { '$User.id$': req.user.id, active: true },
         include: [
             { model: User, attributes: [] },
             {
@@ -64,6 +64,7 @@ router.post('/', body('requestId').isUUID(), async (req, res) => {
     try {
         reply = await Reply.create({
             id: replyId,
+            active: true,
         });
 
         let user = await User.findOne({ where: { id: req.user.id } });
@@ -139,6 +140,42 @@ router.put('/:replyid', body('suggestions').isArray(), async (req, res) => {
     }
     return res.status(StatusCodes.OK).json({
         replyId: req.body.replyId,
+    });
+});
+
+/**
+ * set a replies "active" status to true or false.
+ */
+router.put('/:replyid/active', body('active').isBoolean(), async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res
+            .status(StatusCodes.NOT_FOUND)
+            .json({ errors: errors.array() });
+    }
+
+    let reply;
+    try {
+        reply = await Reply.findOne({
+            where: { id: req.params.replyid, '$User.id$': req.user.id },
+            include: [{ model: User, attributes: [] }],
+        });
+        if (reply == null) {
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send('Reply not found or user does not match.');
+        }
+        try {
+            await reply.update({ active: req.body.active });
+        } catch (e) {
+            return res.status(StatusCodes.BAD_GATEWAY);
+        }
+    } catch (error) {
+        return res.sendStatus(StatusCodes.BAD_GATEWAY);
+    }
+    return res.status(StatusCodes.OK).json({
+        replyId: reply.id,
+        active: reply.active,
     });
 });
 
