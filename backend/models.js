@@ -35,6 +35,10 @@ const Request = sequelize.define('Request', {
     message: {
         type: DataTypes.STRING,
     },
+    token: {
+        type: DataTypes.STRING(24),
+        allowNull: false,
+    },
     active: {
         type: DataTypes.BOOLEAN,
     },
