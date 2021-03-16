@@ -11,8 +11,7 @@ var router = express.Router();
 router.use(expressJwt({ secret: JWT_SECRET, algorithms: ['HS256'] }));
 
 /**
- * get all replies that user has responded to.
- * Body should include userId.
+ * Get list of replies
  */
 router.get('/', async (req, res) => {
     const errors = validationResult(req);
@@ -22,7 +21,7 @@ router.get('/', async (req, res) => {
             .json({ errors: errors.array() });
     }
     Reply.findAll({
-        where: { '$User.id$': req.user.id },
+        where: { '$User.id$': req.user.id, active: true },
         include: [
             { model: User, attributes: [] },
             {
@@ -45,9 +44,9 @@ router.get('/', async (req, res) => {
 
 
 /**
- * get all suggestions for a reply
+ * Get a single reply, including list of suggestions
  */
-router.get('/:replyid', async (req, res) => {
+router.get('/:replyId', async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res
@@ -58,7 +57,7 @@ router.get('/:replyid', async (req, res) => {
     let reply;
     try {
         reply = await Reply.findOne({
-            where: { id: req.params.replyid },
+            where: { id: req.params.replyId, '$User.id$': req.user.id  },
             include: [
                 { model: User, attributes: ['id'] },
                 { model: Suggestion, attributes: ['name', 'phone', 'message'] },
@@ -75,14 +74,13 @@ router.get('/:replyid', async (req, res) => {
         return res.sendStatus(StatusCodes.BAD_GATEWAY);
     }
     if (reply == null) {
-        return res.sendStatus(StatusCodes.NOT_FOUND);
+        return res
+            .status(StatusCodes.NOT_FOUND)
+            .send('Reply not found or not owned by user.');
     }
-    if (reply.User.id != req.user.id) {
-        // Authenticated user does not own the request resource
-        return res.sendStatus(StatusCodes.FORBIDDEN);
-    }
+    
     return res.json({
-        replyid: reply.id,
+        replyId: reply.id,
         requestName: reply.Request.name,
         requestOwner: reply.Request.User.name,
         requestMessage: reply.Request.message,
@@ -90,18 +88,14 @@ router.get('/:replyid', async (req, res) => {
     });
 });
 
-/*
-Create an empty reply when a user accepts a request.
-Body should be 
-{
-    requestId : uuid
-}
-*/
-router.post('/', body('requestId').isUUID(), body('requestToken'), async (req, res) => {
+/**
+ * Create a reply, or activate and return a pre-existing existing reply
+ */
+router.put('/', body('requestId').isUUID(), body('requestToken'), async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res
-            .status(StatusCodes.NOT_FOUND)
+            .status(StatusCodes.BAD_REQUEST)
             .json({ errors: errors.array() });
     }
 
@@ -124,6 +118,9 @@ router.post('/', body('requestId').isUUID(), body('requestToken'), async (req, r
             ],
         });
         if (existingReply != null) {
+            existingReply.active = true;
+            await existingReply.save();
+
             return res.status(StatusCodes.OK).json({
                 id: existingReply.id,
             });
@@ -137,6 +134,7 @@ router.post('/', body('requestId').isUUID(), body('requestToken'), async (req, r
 
         reply = await Reply.create({
             id: uuidv4(),
+            active: true,
         });
 
         await request.addReply(reply);
@@ -151,56 +149,79 @@ router.post('/', body('requestId').isUUID(), body('requestToken'), async (req, r
 });
 
 /*
-Populate reply with user information
-Example Body:
-{
-    "replyId" : UUID,
-    "suggestions" : [
-        {"name": "clark", "phone":"1234567890", "message": "hello"},
-    ]
-}
-*/
-router.put('/:replyId', body('suggestions').isArray(), async (req, res) => {
+ * Add suggestions to a reply
+ */
+router.post('/:replyId/suggestions', body('suggestions').isArray(), async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res
-            .status(StatusCodes.NOT_FOUND)
+            .status(StatusCodes.BAD_REQUEST)
             .json({ errors: errors.array() });
     }
 
     let reply;
     try {
         reply = await Reply.findOne({
-            where: { id: req.params.replyId },
+            where: { id: req.params.replyId, '$User.id$': req.user.id },
             include: [{ model: User, attributes: ['id'] }],
         });
+        if (reply == null) {
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send('Reply not found or not owned by user.');
+        }
+
+        try {
+            for (let s of req.body.suggestions) {
+                suggestion = await Suggestion.create(s);
+                reply.addSuggestion(suggestion);
+            }
+        } catch (e) {
+            console.log('Devlog', e);
+            return res
+                .status(StatusCodes.BAD_GATEWAY)
+                .send('duplicate key issue');
+        }
     } catch (error) {
         return res.sendStatus(StatusCodes.BAD_GATEWAY);
     }
-    if (reply == null) {
-        return res
-            .status(StatusCodes.NOT_FOUND)
-            .send('Reply not found.');
-    }
-    if (reply.User.id != req.user.id) {
-        // Authenticated user does not own the request resource
-        return res.sendStatus(StatusCodes.FORBIDDEN);
-    }
-
-    try {
-        for (let s of req.body.suggestions) {
-            suggestion = await Suggestion.create(s);
-            reply.addSuggestion(suggestion);
-        }
-    } catch (e) {
-        console.log('Devlog', e);
-        return res
-            .status(StatusCodes.BAD_GATEWAY)
-            .send('duplicate key issue');
-    }
-
     return res.status(StatusCodes.OK).json({
-        replyId: req.params.replyId,
+        replyId: req.body.replyId,
+    });
+});
+
+/**
+ * Modify fields of reply
+ */
+router.patch('/:replyId', body('active').isBoolean().optional(), async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({ errors: errors.array() });
+    }
+
+    let reply;
+    try {
+        reply = await Reply.findOne({
+            where: { id: req.params.replyId, '$User.id$': req.user.id },
+            include: [{ model: User, attributes: [] }],
+        });
+        if (reply == null) {
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send('Reply not found or user does not match.');
+        }
+        if (req.body.hasOwnProperty('active')) {
+            reply.active = req.body.active;
+        }
+        await reply.save();
+    } catch (error) {
+        return res.sendStatus(StatusCodes.BAD_GATEWAY);
+    }
+    return res.status(StatusCodes.OK).json({
+        replyId: reply.id,
+        active: reply.active,
     });
 });
 

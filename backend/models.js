@@ -38,7 +38,10 @@ const Request = sequelize.define('Request', {
     token: {
         type: DataTypes.STRING(24),
         allowNull: false,
-    }
+    },
+    active: {
+        type: DataTypes.BOOLEAN,
+    },
 });
 
 const Reply = sequelize.define('Reply', {
@@ -46,6 +49,9 @@ const Reply = sequelize.define('Reply', {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+    },
+    active: {
+        type: DataTypes.BOOLEAN,
     },
 });
 
